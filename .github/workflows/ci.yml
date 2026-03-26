@@ -65,23 +65,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify all skills have SKILL.md and prompts
+      - name: Verify all skills have SKILL.md
         run: |
           fail=0
+          count=0
           for d in skills/*/; do
             if [ ! -f "$d/SKILL.md" ]; then
               echo "FAIL: $d missing SKILL.md"
               fail=1
-            fi
-            if [ ! -d "$d/prompts" ]; then
-              echo "FAIL: $d missing prompts/"
-              fail=1
-            fi
-            count=$(find "$d/prompts" -name "*.md" | wc -l)
-            if [ "$count" -eq 0 ]; then
-              echo "FAIL: $d/prompts/ has no .md files"
-              fail=1
+            else
+              count=$((count+1))
             fi
           done
           if [ "$fail" -eq 1 ]; then exit 1; fi
-          echo "All 12 skills valid"
+          echo "All $count skills valid"

@@ -2,7 +2,7 @@
 
 > What if every analyst had a senior MD's frameworks, a quant's toolkit, and a risk officer's discipline — loaded into their terminal?
 
-**Alpha Stack** is an installable AI skill system for finance. 12 skills covering every major Wall Street desk, 19 computational tools with zero dependencies, and a structured workflow for investment analysis — from sourcing ideas to monitoring positions.
+**Alpha Stack** is an installable AI skill system for finance. 22 skills covering every major Wall Street desk, 19 computational tools with zero dependencies, and a structured workflow for investment analysis — from sourcing ideas to monitoring positions.
 
 It turns Claude Code into a **virtual finance team**: an M&A banker who builds merger models, a derivatives trader who thinks in Greeks, a portfolio manager who optimizes with Black-Litterman, and a risk officer who stress-tests everything with Monte Carlo.
 
@@ -15,7 +15,7 @@ git clone https://github.com/tmcga/alpha-prompts.git ~/alpha-stack
 cd ~/alpha-stack && ./setup.sh
 ```
 
-Open Claude Code. Type `/deal`. You're running.
+Open Claude Code. Type `/sell-side`. You're running.
 
 **For Claude Desktop** (no terminal needed): run `./setup-mcp.sh` instead. See [MCP Server](#claude-desktop-mcp-server) below.
 
@@ -41,24 +41,55 @@ Every analysis follows six phases:
 
 ---
 
-## 12 Skills
+## 22 Skills
 
-| Command | Skill | What It Does |
-|---------|-------|-------------|
-| `/deal` | Deal Execution | M&A advisory, leveraged finance, restructuring, fairness opinions |
-| `/markets` | Capital Markets | ECM, DCM, equity research, IPO analysis |
-| `/derivatives` | Options & Derivatives | Black-Scholes, Greeks, implied vol, convertible bonds |
-| `/trade` | Trading & Execution | Equities, FI, FX, commodities, Avellaneda-Stoikov market making |
-| `/hedge` | Hedge Fund Strategies | L/S equity, macro, quant, event-driven, credit/distressed |
-| `/pe` | Private Capital | Buyouts, growth equity, special sits, private credit |
-| `/real-assets` | Real Assets | Real estate (cap rates, development), infrastructure |
-| `/portfolio` | Portfolio Construction | Black-Litterman, Brinson attribution, factor investing |
-| `/risk` | Risk Analytics | VaR/CVaR, Monte Carlo, stress testing, tail risk |
-| `/vc` | Venture Capital | Seed through growth, dilution modeling, fund metrics (TVPI/IRR) |
-| `/wealth` | Wealth Advisory | Retirement planning, estate/tax, goals-based allocation |
-| `/quant` | Quant Signals | Strategy development, LLM sentiment, cross-desk analysis |
+**Deal & Banking**
+| Command | What It Does |
+|---------|-------------|
+| `/sell-side` | Sell-side M&A — teaser, CIM, buyer mapping, bid evaluation, fairness opinion |
+| `/buy-side` | Buy-side acquisition — target screening, valuation, synergies, offer structuring |
+| `/lbo` | LBO modeling — debt sizing, returns attribution, sensitivity, exit analysis |
+| `/restructuring` | Distressed — liquidity triage, waterfall, fulcrum security, plan of reorg |
+| `/ipo` | IPO analysis — readiness, valuation, bookbuilding, pricing, stabilization |
+| `/pitch-deck` | Pitch deck builder — startup fundraise, deal marketing, fund pitch, internal |
+| `/investment-memo` | IC memo — equity L/S, PE/VC, credit, and real estate modes |
 
-Each skill includes role-specific AI personas, structured workflows, mathematical frameworks, and automatic tool invocation.
+**Trading & Derivatives**
+| Command | What It Does |
+|---------|-------------|
+| `/trade` | Execution analysis — block trades, VWAP/TWAP, market impact, TCA |
+| `/derivatives` | Options pricing — Greeks, implied vol, strategy construction, convertibles |
+| `/market-making` | Avellaneda-Stoikov — optimal quoting, inventory management, regime adaptation |
+
+**Hedge Funds**
+| Command | What It Does |
+|---------|-------------|
+| `/long-short` | L/S equity — variant perception, catalyst mapping, Kelly sizing, monitoring |
+| `/macro` | Global macro — regime identification, cross-asset expression, geopolitical risk |
+| `/merger-arb` | Event-driven — deal spread, implied probability, collar/CVR, portfolio exposure |
+| `/credit` | Credit analysis — Z-Score, Merton model, recovery, relative value, IG/HY/distressed |
+
+**Portfolio & Risk**
+| Command | What It Does |
+|---------|-------------|
+| `/portfolio` | Portfolio construction — Black-Litterman, risk parity, factor, constrained optimization |
+| `/risk` | Risk analytics — VaR/CVaR, Monte Carlo stress testing, factor decomposition, tail risk |
+| `/attribution` | Performance attribution — Brinson-Fachler, factor, currency, fixed income, multi-period |
+
+**Alternatives**
+| Command | What It Does |
+|---------|-------------|
+| `/pe` | Private equity — buyouts, growth, special sits, private credit, fund metrics |
+| `/vc` | Venture capital — term sheets, cap tables, dilution, rNPV, crypto/web3, fund construction |
+| `/real-estate` | Real estate — cap rates, development pro forma, REIT analysis, debt structuring |
+| `/wealth` | Wealth advisory — retirement (Monte Carlo), estate/tax, goals-based, insurance |
+
+**Quant**
+| Command | What It Does |
+|---------|-------------|
+| `/quant` | Strategy development — signals, backtesting, overfitting detection, LLM sentiment, regime |
+
+Each skill is a **300-800+ line execution pipeline** with phased workflows, decision gates, tool integration, output specifications, quality gates, hard constraints, and common pitfalls.
 
 ---
 
@@ -171,8 +202,8 @@ Claude: [calls kelly_criterion tool]
 ## Example Session
 
 ```
-You:     /deal
-Claude:  Deal Execution skill activated. What deal are you working on?
+You:     /sell-side
+Claude:  Sell-side M&A skill activated. What deal are you working on?
 
 You:     Sell-side M&A for a $200M revenue specialty chemical company.
          EBITDA: $60M, growing 8%. Net debt: $150M. 100M shares out.
@@ -211,11 +242,12 @@ alpha-stack/
 ├── setup-mcp.sh           Claude Desktop MCP installer
 ├── mcp_server.py          MCP server (23 tools for Claude Desktop)
 ├── pyproject.toml         Python dependencies (mcp SDK)
-├── skills/                12 skill directories (SKILL.md + prompts/)
-│   ├── deal-execution/
-│   ├── hedge-fund-strategies/
-│   ├── portfolio-construction/
-│   └── ...
+├── skills/                22 skill directories (SKILL.md + prompts/)
+│   ├── sell-side/         782 lines — full M&A process
+│   ├── lbo/               843 lines — LBO modeling pipeline
+│   ├── long-short/        726 lines — L/S equity analysis
+│   ├── pitch-deck/        372 lines — pitch deck builder
+│   └── ... (18 more)
 ├── tools/                 19 Python calculators (stdlib-only)
 ├── tests/                 53 pytest tests
 └── docs/                  Workflow documentation

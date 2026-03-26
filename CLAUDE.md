@@ -1,23 +1,54 @@
 # Alpha Stack
 
-This is **Alpha Stack** — an installable AI skill system for finance. 12 skills, 19 computational tools, and a structured workflow for investment analysis.
+This is **Alpha Stack** — an installable AI skill system for finance. 22 skills, 19 computational tools, and a structured workflow for investment analysis.
 
 ## Skill Registry
 
+**Deal & Banking**
 | Command | Skill | What It Does |
 |---------|-------|-------------|
-| `/deal` | deal-execution | M&A advisory, leveraged finance, restructuring |
-| `/markets` | capital-markets | ECM, DCM, equity research |
-| `/derivatives` | options-and-derivatives | Options pricing, structured products |
-| `/trade` | trading-and-execution | Cash equities, fixed income, FX, commodities, market making |
-| `/hedge` | hedge-fund-strategies | L/S equity, macro, quant, event-driven, credit |
-| `/pe` | private-capital | Buyouts, growth equity, special situations, private credit |
-| `/real-assets` | real-assets | Real estate, infrastructure |
-| `/portfolio` | portfolio-construction | Active equity, factor, multi-asset, alternatives allocation |
-| `/risk` | risk-analytics | Portfolio risk, VaR/CVaR, stress testing |
-| `/vc` | venture-capital | Early/growth stage, biotech, crypto, platform ops |
-| `/wealth` | wealth-advisory | Private banking, financial planning, estate/tax |
-| `/quant` | quant-signals | Strategy development, LLM sentiment, cross-desk analysis |
+| `/sell-side` | sell-side | Sell-side M&A process (teaser → CIM → buyer mapping → bids) |
+| `/buy-side` | buy-side | Buy-side acquisition (screening → valuation → synergies → offer) |
+| `/lbo` | lbo | LBO modeling (debt sizing → returns → attribution → stress) |
+| `/restructuring` | restructuring | Distressed & restructuring (waterfall → fulcrum → plan of reorg) |
+| `/ipo` | ipo | IPO analysis (readiness → valuation → pricing → allocation) |
+| `/pitch-deck` | pitch-deck | Pitch deck builder (startup, deal marketing, fund, internal) |
+| `/investment-memo` | investment-memo | IC memo (equity, PE/VC, credit, real estate modes) |
+
+**Trading & Derivatives**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/trade` | trading-and-execution | Execution analysis (block trades, VWAP/TWAP, market impact) |
+| `/derivatives` | options-and-derivatives | Options pricing, Greeks, vol analysis, structured products |
+| `/market-making` | market-making | Avellaneda-Stoikov quoting, inventory management, P&L attribution |
+
+**Hedge Funds**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/long-short` | long-short | L/S equity (variant perception → catalyst → Kelly sizing) |
+| `/macro` | macro | Global macro thesis (regime → cross-asset → expression → sizing) |
+| `/merger-arb` | merger-arb | Event-driven / merger arb (spread → probability → collar/CVR) |
+| `/credit` | credit | Credit & distressed (Z-Score → Merton → recovery → relative value) |
+
+**Portfolio & Risk**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/portfolio` | portfolio-construction | Portfolio optimization (Black-Litterman, risk parity, factor) |
+| `/risk` | risk-analytics | Risk analytics (VaR/CVaR, Monte Carlo, stress testing, tail risk) |
+| `/attribution` | attribution | Performance attribution (Brinson, factor, currency, fixed income) |
+
+**Alternatives**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/pe` | private-capital | Private equity (buyouts, growth, credit, fund metrics) |
+| `/vc` | venture-capital | Venture capital (term sheets, cap tables, dilution, rNPV, crypto) |
+| `/real-estate` | real-estate | Real estate (cap rates, development, REIT, debt structuring) |
+| `/wealth` | wealth-advisory | Wealth advisory (retirement, estate/tax, goals-based, insurance) |
+
+**Quant**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/quant` | quant-signals | Strategy dev (signals, backtesting, regime detection, LLM sentiment) |
 
 ## The Alpha Stack Workflow
 
@@ -73,7 +104,7 @@ When analyzing a company, event, or market move, offer to show it through multip
 ## Repo Structure
 
 ```
-skills/          12 skill directories, each with SKILL.md + prompts/
+skills/          22 skill directories, each with SKILL.md + prompts/
 tools/           19 standalone Python calculators (stdlib-only, <200 lines each)
 mcp_server.py    MCP server exposing all tools for Claude Desktop
 docs/            Workflow documentation
