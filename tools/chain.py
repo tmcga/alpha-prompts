@@ -1,17 +1,11 @@
 #!/usr/bin/env python3
-"""Chained tool workflows — multi-tool analyses in a single call.
-
-Usage: python chain.py --valuation --fcf 100,110,121 --wacc 0.10 --tg 0.025 --lbo-ebitda 100 --entry 10 --exit 11 --leverage 5 --rate 0.06 --growth 0.08
-       python chain.py --credit --revenue 680 --ebitda 102 --debt 820 --equity 200 --vol 0.35
-"""
+"""Chained tool workflows — compose existing tools into multi-step analyses."""
 
 import argparse
-from dcf import dcf_valuation
-from lbo import lbo_returns
-from credit_spread import altman_zscore
-from merton_model import merton_model
-from portfolio_risk import portfolio_metrics, benchmark_relative
-from kelly import kelly_criterion
+
+_DCF_LOW, _DCF_HIGH = 0.85, 1.15  # +/- 15% confidence band around DCF
+_LBO_FLOOR = 0.9  # 10% discount on LBO entry for floor
+_ASSUMED_DEBT_COST = 0.06  # default rate for coverage calc
 
 
 def valuation_triangle(
@@ -33,6 +27,9 @@ def valuation_triangle(
     Returns:
         Dict with DCF value, LBO value (if inputs provided), and combined range.
     """
+    from dcf import dcf_valuation
+    from lbo import lbo_returns
+
     dcf = dcf_valuation(fcfs, wacc_rate, terminal_growth=terminal_growth, net_debt=net_debt, shares=shares)
     result = {
         "dcf": {
@@ -42,8 +39,8 @@ def valuation_triangle(
             "terminal_value_pct": dcf["terminal_value_pct"],
         },
     }
-    ev_low = dcf["enterprise_value"] * 0.85
-    ev_high = dcf["enterprise_value"] * 1.15
+    ev_low = dcf["enterprise_value"] * _DCF_LOW
+    ev_high = dcf["enterprise_value"] * _DCF_HIGH
     if lbo_ebitda and entry_multiple and exit_multiple:
         lbo = lbo_returns(lbo_ebitda, entry_multiple, exit_multiple, leverage, debt_rate, ebitda_growth, years)
         result["lbo"] = {
@@ -52,7 +49,7 @@ def valuation_triangle(
             "moic": lbo["moic"],
             "irr": lbo["irr"],
         }
-        ev_low = min(ev_low, lbo["entry_ev"] * 0.9)
+        ev_low = min(ev_low, lbo["entry_ev"] * _LBO_FLOOR)
         ev_high = max(ev_high, lbo["exit_ev"])
     result["range"] = {"ev_low": round(ev_low, 1), "ev_high": round(ev_high, 1)}
     return result
@@ -73,32 +70,34 @@ def credit_full(
     """Run Z-Score + Merton model for integrated credit view.
 
     Returns:
-        Dict with Z-Score analysis and Merton default probability.
+        Dict with Z-Score analysis (if inputs provided) and Merton default probability.
     """
+    from credit_spread import altman_zscore
+    from merton_model import merton_model
+
     result = {}
     if current_assets is not None and current_liabilities is not None and retained_earnings is not None:
+        ta = equity_value + total_debt
         zscore = altman_zscore(
-            current_assets=current_assets,
-            current_liabilities=current_liabilities,
-            total_assets=equity_value + total_debt,
-            retained_earnings=retained_earnings,
-            ebit=ebitda * 0.85,
-            market_equity=equity_value,
-            total_liabilities=total_debt,
-            revenue=revenue,
+            wc_ta=(current_assets - current_liabilities) / ta,
+            re_ta=retained_earnings / ta,
+            ebit_ta=(ebitda * 0.85) / ta,
+            equity_debt=equity_value / total_debt if total_debt > 0 else 0,
+            sales_ta=revenue / ta,
         )
         result["zscore"] = zscore
     asset_value = equity_value + total_debt
-    merton = merton_model(asset_value, total_debt, risk_free, maturity, asset_vol)
+    merton = merton_model(asset_value, total_debt, asset_vol, risk_free, maturity)
     result["merton"] = {
         "default_probability": merton["default_probability"],
         "distance_to_default": merton["distance_to_default"],
         "equity_value": merton["equity_value"],
         "credit_spread_bps": merton["credit_spread_bps"],
     }
+    cost_of_debt = total_debt * _ASSUMED_DEBT_COST
     result["summary"] = {
         "leverage": round(total_debt / ebitda, 1) if ebitda > 0 else None,
-        "coverage": round(ebitda / (total_debt * 0.06), 1) if total_debt > 0 else None,
+        "coverage": round(ebitda / cost_of_debt, 1) if cost_of_debt > 0 else None,
         "default_probability_pct": round(merton["default_probability"] * 100, 2),
     }
     return result
@@ -116,6 +115,9 @@ def portfolio_full(
     Returns:
         Dict with risk metrics, benchmark comparison, and position sizing.
     """
+    from portfolio_risk import portfolio_metrics, benchmark_relative
+    from kelly import kelly_criterion
+
     metrics = portfolio_metrics(returns, risk_free)
     result = {"metrics": metrics}
     if benchmark_returns:
@@ -130,7 +132,6 @@ def portfolio_full(
 def main():
     parser = argparse.ArgumentParser(description="Chained Tool Workflows")
     sub = parser.add_subparsers(dest="workflow")
-
     val = sub.add_parser("valuation", help="DCF + LBO valuation triangle")
     val.add_argument("--fcf", required=True, help="Comma-separated FCFs")
     val.add_argument("--wacc", type=float, required=True)
@@ -143,14 +144,12 @@ def main():
     val.add_argument("--leverage", type=float, default=5.0)
     val.add_argument("--rate", type=float, default=0.06)
     val.add_argument("--growth", type=float, default=0.08)
-
     cred = sub.add_parser("credit", help="Z-Score + Merton credit analysis")
     cred.add_argument("--revenue", type=float, required=True)
     cred.add_argument("--ebitda", type=float, required=True)
     cred.add_argument("--debt", type=float, required=True)
     cred.add_argument("--equity", type=float, required=True)
     cred.add_argument("--vol", type=float, default=0.30)
-
     args = parser.parse_args()
     if args.workflow == "valuation":
         fcfs = [float(x) for x in args.fcf.split(",")]
