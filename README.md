@@ -255,7 +255,7 @@ alpha-stack/
 │   ├── lbo/               843 lines — LBO modeling pipeline
 │   ├── long-short/        726 lines — L/S equity analysis
 │   ├── pitch-deck/        372 lines — pitch deck builder
-│   └── ... (18 more)
+│   └── ... (22 more)
 ├── tools/                 19 Python calculators (stdlib-only)
 ├── tests/                 53 pytest tests
 └── docs/                  Workflow documentation

@@ -138,7 +138,7 @@ LTV = (ARPA x Gross Margin %) / Monthly Churn Rate
 ```
 LTV = (ARPA x Gross Margin %) / (Monthly Churn Rate - Monthly Expansion Rate)
 ```
-Note: Only use this if NDR > 100%. If NDR < 100%, the basic gross margin-adjusted formula is safer.
+Note: Only use this if NDR < 100% (churn exceeds expansion). When NDR > 100%, the denominator goes negative — use the discounted finite-horizon formula below instead.
 
 **LTV with discount rate (for sophisticated analysis):**
 ```
@@ -776,7 +776,7 @@ Payback Period = Initial Investment / Annual Net Cash Benefit
 |--------------------------|---------|---------|
 | NPV for build vs. buy | `python3 tools/dcf.py --fcf -500,100,200,300,350 --wacc 0.12 --terminal-growth 0.02 --shares 1` | NPV of incremental cash flows |
 | Scenario ranges for projections | `python3 tools/monte_carlo.py --initial 1000000 --return 0.5 --vol 0.3 --years 3 --sims 10000` | Percentile ranges for revenue/cost |
-| Lease vs. buy comparison | `python3 tools/loan_amort.py --principal 500000 --rate 0.06 --years 5 --frequency monthly` | Amortization schedule and total interest |
+| Lease vs. buy comparison | `python3 tools/loan_amort.py --principal 500000 --rate 0.06 --years 5` | Amortization schedule and total interest |
 | Hurdle rate for investments | `python3 tools/wacc.py --equity 800 --debt 200 --tax 0.25 --rf 0.04 --beta 1.1 --erp 0.055 --cost-of-debt 0.05` | WACC as discount rate |
 | Full valuation for strategic options | `python3 tools/dcf.py --fcf 10,15,20,25,30 --wacc 0.10 --terminal-growth 0.03 --shares 100` | Enterprise and equity value |
 
@@ -874,4 +874,4 @@ Output as contribution margin waterfall by segment with allocation methodology c
 - For revenue forecasting models → `/forecast`
 - For fundraising presentations → `/pitch-deck`
 - For valuation analysis → `/lbo` or run DCF tools directly
-- For detailed venture-stage analysis → `/venture-capital`
+- For detailed venture-stage analysis → `/vc`
