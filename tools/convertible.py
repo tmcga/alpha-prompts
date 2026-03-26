@@ -44,9 +44,19 @@ def convertible_bond(
 
     # Bond floor (straight bond value)
     bond_floor = 0
-    for t in range(1, int(maturity) + 1):
-        cf = coupon if t < int(maturity) else coupon + face
+    full_years = int(maturity)
+    frac = maturity - full_years
+
+    for t in range(1, full_years + 1):
+        cf = coupon if t < full_years or frac > 0 else coupon + face
         bond_floor += cf / (1 + discount_rate) ** t
+
+    if frac > 0:
+        cf = coupon * frac + face
+        bond_floor += cf / (1 + discount_rate) ** maturity
+    elif full_years == 0:
+        cf = coupon * maturity + face
+        bond_floor += cf / (1 + discount_rate) ** maturity
 
     # Conversion value (parity)
     parity = stock_price * conversion_ratio
