@@ -39,6 +39,14 @@ def brinson_attribution(
     if not (n == len(port_returns) == len(bench_weights) == len(bench_returns)):
         raise ValueError("All input lists must have the same length")
 
+    port_weight_sum = sum(port_weights)
+    bench_weight_sum = sum(bench_weights)
+    if abs(port_weight_sum - 1.0) > 0.05:
+        raise ValueError(f"Portfolio weights must sum to ~1.0, got {port_weight_sum:.3f}")
+    if abs(bench_weight_sum - 1.0) > 0.05:
+        raise ValueError(f"Benchmark weights must sum to ~1.0, got {bench_weight_sum:.3f}")
+    weights_normalized = abs(port_weight_sum - 1.0) < 0.01 and abs(bench_weight_sum - 1.0) < 0.01
+
     if sector_names is None:
         sector_names = [f"Sector {i + 1}" for i in range(n)]
 
@@ -92,6 +100,7 @@ def brinson_attribution(
         "total_allocation": total_alloc,
         "total_selection": total_select,
         "total_interaction": total_interact,
+        "weights_normalized": weights_normalized,
         "sectors": sectors,
     }
 

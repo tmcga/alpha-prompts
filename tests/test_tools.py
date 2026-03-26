@@ -270,6 +270,24 @@ class TestBrinson:
         total = r["total_allocation"] + r["total_selection"] + r["total_interaction"]
         assert abs(total - r["active_return"]) < 1e-10
 
+    def test_weights_not_normalized_warns(self):
+        r = brinson_attribution(
+            [0.48, 0.48],
+            [0.10, 0.05],
+            [0.50, 0.50],
+            [0.08, 0.06],
+        )
+        assert r["weights_normalized"] is False
+
+    def test_weights_way_off_raises(self):
+        with pytest.raises(ValueError, match="must sum to"):
+            brinson_attribution(
+                [0.30, 0.20],
+                [0.10, 0.05],
+                [0.50, 0.50],
+                [0.08, 0.06],
+            )
+
     def test_sector_names(self):
         r = brinson_attribution(
             [0.5, 0.5],
@@ -311,6 +329,10 @@ class TestMonteCarlo:
         r = monte_carlo_sim(1000000, 0.07, 0.15, 10, num_sims=1000, seed=42)
         assert r["mean_terminal"] > 0
         assert r["percentile_5"] < r["percentile_50"] < r["percentile_95"]
+
+    def test_negative_withdrawal_raises(self):
+        with pytest.raises(ValueError, match="non-negative"):
+            monte_carlo_sim(100000, 0.07, 0.15, 10, withdrawal_rate=-0.05)
 
     def test_ruin_with_high_withdrawal(self):
         r = monte_carlo_sim(100000, 0.05, 0.20, 30, num_sims=1000, withdrawal_rate=0.15, seed=42)

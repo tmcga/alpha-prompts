@@ -30,7 +30,7 @@ def monte_carlo_sim(
         volatility: Annual volatility (std dev of returns).
         years: Investment horizon.
         num_sims: Number of simulation paths.
-        withdrawal_rate: Annual withdrawal as fraction of initial (inflation-adjusted).
+        withdrawal_rate: Annual withdrawal as fraction of initial (non-negative).
         contribution: Annual contribution amount.
         goal: Target ending value (for success probability).
         seed: Random seed for reproducibility.
@@ -38,6 +38,9 @@ def monte_carlo_sim(
     Returns:
         Dict with percentile outcomes, success probability, and statistics.
     """
+    if withdrawal_rate < 0:
+        raise ValueError("Withdrawal rate must be non-negative (use 'contribution' for additions)")
+
     if seed is not None:
         random.seed(seed)
 
