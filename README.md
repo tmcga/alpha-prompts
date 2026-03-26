@@ -140,4 +140,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding new skills, prom
 
 ## License
 
-[MIT](LICENSE) — fork it, extend it, make it yours.
+[MIT](LICENSE)
