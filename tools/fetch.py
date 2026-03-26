@@ -26,7 +26,7 @@ def treasury_rates() -> dict:
             f"?type=daily_treasury_yield_curve&field_tdr_date_value={year}&page&_format=csv"
         )
         req = urllib.request.Request(yc_url, headers=_UA)
-        with urllib.request.urlopen(req, timeout=15) as resp:
+        with urllib.request.urlopen(req, timeout=15) as resp:  # nosec B310
             lines = resp.read().decode().strip().split("\n")
 
         if len(lines) < 2:
@@ -84,7 +84,7 @@ def fred_series(series_ids: list[str]) -> dict:
             start = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
             url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={sid}&cosd={start}"
             req = urllib.request.Request(url, headers=_UA)
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            with urllib.request.urlopen(req, timeout=10) as resp:  # nosec B310
                 lines = resp.read().decode().strip().split("\n")
 
             if len(lines) < 2:
