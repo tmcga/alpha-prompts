@@ -153,6 +153,15 @@ class TestConvertible:
         assert r["parity"] == 50 * 15
         assert r["theoretical_value"] > r["bond_floor"]
 
+    def test_fractional_maturity(self):
+        r = convertible_bond(1000, 0.05, 0.5, 0.03, 50, 15, 0.30, 0.04)
+        assert r["bond_floor"] > 0
+
+    def test_fractional_maturity_2_5(self):
+        r = convertible_bond(1000, 0.05, 2.5, 0.03, 50, 15, 0.30, 0.04)
+        assert r["bond_floor"] > 0
+        assert r["theoretical_value"] > r["bond_floor"]
+
     def test_profile_classification(self):
         r = convertible_bond(1000, 0.02, 5, 0.03, 50, 15, 0.30, 0.04)
         assert r["profile"] in ["Equity-like", "Balanced", "Busted (bond-like)"]
