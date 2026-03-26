@@ -109,11 +109,21 @@ When producing financial analysis:
 
 When analyzing a company, event, or market move, offer to show it through multiple desk perspectives. The same acquisition looks different to an M&A banker, an event-driven hedge fund, a credit analyst, and an equity research analyst. Cross-referencing is a first-class feature — it is often where the real edge is found.
 
+## Quick-Start Examples
+
+Every skill has a ready-to-paste example scenario in `examples/`. When a user invokes a skill without providing context or inputs, suggest the relevant example:
+
+- "Not sure where to start? Try pasting the scenario from `examples/sell-side.md` — it's a full specialty chemical M&A deal."
+- Each example includes a company profile, financial data, and a "Try It" block with the exact prompt to paste.
+
+The examples directory maps 1:1 to skills: `examples/lbo.md` for `/lbo`, `examples/fpa.md` for `/fpa`, etc.
+
 ## Repo Structure
 
 ```
 skills/          26 skill directories, each with SKILL.md + prompts/
 tools/           19 standalone Python calculators (stdlib-only, <200 lines each)
+examples/        26 quick-start scenarios (one per skill, ready to paste)
 mcp_server.py    MCP server exposing all tools for Claude Desktop
 docs/            Workflow documentation
 ETHOS.md         Finance AI philosophy

@@ -99,6 +99,8 @@ Every analysis follows six phases:
 
 Each skill is a **300-870+ line execution pipeline** with phased workflows, decision gates, tool integration, output specifications, quality gates, hard constraints, and common pitfalls.
 
+Every skill has a **ready-to-paste example** in [`examples/`](examples/) — realistic scenarios with all inputs pre-filled so you can try any skill immediately without inventing data.
+
 ---
 
 ## 19 Computational Tools
@@ -250,6 +252,7 @@ alpha-stack/
 ├── setup-mcp.sh           Claude Desktop MCP installer
 ├── mcp_server.py          MCP server (23 tools for Claude Desktop)
 ├── pyproject.toml         Python dependencies (mcp SDK)
+├── examples/              26 ready-to-paste scenarios (one per skill)
 ├── skills/                26 skill directories (SKILL.md + prompts/)
 │   ├── sell-side/         782 lines — full M&A process
 │   ├── lbo/               843 lines — LBO modeling pipeline
