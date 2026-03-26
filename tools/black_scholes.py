@@ -3,6 +3,7 @@
 
 Usage:
     python black_scholes.py --spot 100 --strike 105 --time 0.5 --rate 0.05 --vol 0.2 --type call
+    python black_scholes.py --spot 100 --strike 105 --time 0.5 --rate 0.05 --vol 0.2 --div 0.02 --type call
 """
 import argparse
 import math
@@ -19,7 +20,8 @@ def norm_pdf(x: float) -> float:
 
 
 def black_scholes(spot: float, strike: float, time: float, rate: float,
-                  vol: float, option_type: str = "call") -> dict:
+                  vol: float, option_type: str = "call",
+                  div_yield: float = 0.0) -> dict:
     """Calculate Black-Scholes price and Greeks.
 
     Args:
@@ -29,41 +31,56 @@ def black_scholes(spot: float, strike: float, time: float, rate: float,
         rate: Risk-free interest rate.
         vol: Annualized volatility.
         option_type: "call" or "put".
+        div_yield: Continuous dividend yield.
 
     Returns:
-        Dict with price, delta, gamma, vega, theta, rho.
+        Dict with price, delta, gamma, vega, theta, rho, vanna, charm.
     """
     if time <= 0:
-        # At expiry
         if option_type == "call":
             intrinsic = max(spot - strike, 0)
         else:
             intrinsic = max(strike - spot, 0)
-        return {"price": intrinsic, "delta": 0, "gamma": 0, "vega": 0, "theta": 0, "rho": 0}
+        return {"price": intrinsic, "delta": 0, "gamma": 0, "vega": 0,
+                "theta": 0, "rho": 0, "vanna": 0, "charm": 0}
 
-    d1 = (math.log(spot / strike) + (rate + 0.5 * vol ** 2) * time) / (vol * math.sqrt(time))
-    d2 = d1 - vol * math.sqrt(time)
+    # Adjusted spot for continuous dividends
+    s_adj = spot * math.exp(-div_yield * time)
+    sqrt_t = math.sqrt(time)
+
+    d1 = (math.log(s_adj / strike) + (rate + 0.5 * vol ** 2) * time) / (vol * sqrt_t)
+    d2 = d1 - vol * sqrt_t
+
+    df = math.exp(-rate * time)
+    qf = math.exp(-div_yield * time)
 
     if option_type == "call":
-        price = spot * norm_cdf(d1) - strike * math.exp(-rate * time) * norm_cdf(d2)
-        delta = norm_cdf(d1)
-        rho = strike * time * math.exp(-rate * time) * norm_cdf(d2) / 100
+        price = s_adj * norm_cdf(d1) - strike * df * norm_cdf(d2)
+        delta = qf * norm_cdf(d1)
+        rho = strike * time * df * norm_cdf(d2) / 100
     else:
-        price = strike * math.exp(-rate * time) * norm_cdf(-d2) - spot * norm_cdf(-d1)
-        delta = norm_cdf(d1) - 1
-        rho = -strike * time * math.exp(-rate * time) * norm_cdf(-d2) / 100
+        price = strike * df * norm_cdf(-d2) - s_adj * norm_cdf(-d1)
+        delta = qf * (norm_cdf(d1) - 1)
+        rho = -strike * time * df * norm_cdf(-d2) / 100
 
-    gamma = norm_pdf(d1) / (spot * vol * math.sqrt(time))
-    vega = spot * norm_pdf(d1) * math.sqrt(time) / 100  # per 1% vol move
-    theta = (-(spot * norm_pdf(d1) * vol) / (2 * math.sqrt(time))
-             - rate * strike * math.exp(-rate * time) * norm_cdf(d2 if option_type == "call" else -d2)
-             * (1 if option_type == "call" else -1)) / 365  # per day
+    gamma = qf * norm_pdf(d1) / (spot * vol * sqrt_t)
+    vega = spot * qf * norm_pdf(d1) * sqrt_t / 100
+    theta = (-(spot * qf * norm_pdf(d1) * vol) / (2 * sqrt_t)
+             + div_yield * spot * qf * norm_cdf(d1 if option_type == "call" else -d1)
+             * (1 if option_type == "call" else -1)
+             - rate * strike * df * norm_cdf(d2 if option_type == "call" else -d2)
+             * (1 if option_type == "call" else -1)) / 365
+
+    # Higher-order Greeks
+    vanna = -qf * norm_pdf(d1) * d2 / vol  # dDelta/dVol
+    charm = -qf * norm_pdf(d1) * (d2 * (2 * (rate - div_yield) * time - d2 * vol * sqrt_t)
+            / (2 * time * vol * sqrt_t)) / 365  # dDelta/dTime per day
 
     # Put-call parity check
-    call_price = spot * norm_cdf(d1) - strike * math.exp(-rate * time) * norm_cdf(d2)
-    put_price = strike * math.exp(-rate * time) * norm_cdf(-d2) - spot * norm_cdf(-d1)
+    call_price = s_adj * norm_cdf(d1) - strike * df * norm_cdf(d2)
+    put_price = strike * df * norm_cdf(-d2) - s_adj * norm_cdf(-d1)
     parity_lhs = call_price - put_price
-    parity_rhs = spot - strike * math.exp(-rate * time)
+    parity_rhs = s_adj - strike * df
 
     return {
         "price": price,
@@ -72,6 +89,8 @@ def black_scholes(spot: float, strike: float, time: float, rate: float,
         "vega": vega,
         "theta": theta,
         "rho": rho,
+        "vanna": vanna,
+        "charm": charm,
         "d1": d1,
         "d2": d2,
         "put_call_parity_check": abs(parity_lhs - parity_rhs) < 1e-10,
@@ -86,9 +105,11 @@ def main():
     parser.add_argument("--rate", type=float, default=0.05, help="Risk-free rate (default: 0.05)")
     parser.add_argument("--vol", type=float, required=True, help="Volatility (e.g., 0.20)")
     parser.add_argument("--type", dest="option_type", default="call", choices=["call", "put"])
+    parser.add_argument("--div", type=float, default=0.0, help="Continuous dividend yield (default: 0)")
     args = parser.parse_args()
 
-    r = black_scholes(args.spot, args.strike, args.time, args.rate, args.vol, args.option_type)
+    r = black_scholes(args.spot, args.strike, args.time, args.rate, args.vol,
+                      args.option_type, args.div)
 
     print(f"\n{'='*50}")
     print(f"  Black-Scholes: {args.option_type.upper()}")
@@ -103,6 +124,8 @@ def main():
     print(f"  Vega:    {r['vega']:>9.4f}   (per 1% vol)")
     print(f"  Theta:   {r['theta']:>9.4f}   (per day)")
     print(f"  Rho:     {r['rho']:>9.4f}   (per 1% rate)")
+    print(f"  Vanna:   {r['vanna']:>9.4f}   (dDelta/dVol)")
+    print(f"  Charm:   {r['charm']:>9.4f}   (dDelta/dT per day)")
     print(f"{'─'*50}")
     print(f"  d1:      {r['d1']:>9.4f}")
     print(f"  d2:      {r['d2']:>9.4f}")

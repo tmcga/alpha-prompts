@@ -5,12 +5,13 @@ Usage:
     python lbo.py --ebitda 100 --entry-multiple 10 --exit-multiple 10 --leverage 5 --rate 0.06 --growth 0.05 --years 5
 """
 import argparse
-import math
 
 
 def lbo_returns(ebitda: float, entry_multiple: float, exit_multiple: float,
                 leverage: float, interest_rate: float, ebitda_growth: float,
-                years: int, amortization_pct: float = 0.01) -> dict:
+                years: int, amortization_pct: float = 0.01,
+                tax_rate: float = None, capex_pct: float = None,
+                nwc_pct: float = None, da_pct: float = None) -> dict:
     """Calculate LBO returns with MOIC, IRR, and attribution.
 
     Args:
@@ -22,10 +23,16 @@ def lbo_returns(ebitda: float, entry_multiple: float, exit_multiple: float,
         ebitda_growth: Annual EBITDA growth rate.
         years: Hold period.
         amortization_pct: Annual mandatory amortization as % of initial debt.
+        tax_rate: Corporate tax rate (enables detailed FCF build).
+        capex_pct: CapEx as % of EBITDA.
+        nwc_pct: Change in NWC as % of EBITDA growth.
+        da_pct: D&A as % of EBITDA.
 
     Returns:
         Dict with MOIC, IRR, equity values, debt schedule, and returns attribution.
     """
+    detailed_fcf = tax_rate is not None
+
     # Entry
     entry_ev = ebitda * entry_multiple
     entry_debt = ebitda * leverage
@@ -38,13 +45,22 @@ def lbo_returns(ebitda: float, entry_multiple: float, exit_multiple: float,
 
     for yr in range(1, years + 1):
         yr_ebitda = ebitda * (1 + ebitda_growth) ** yr
+        prev_ebitda = ebitda * (1 + ebitda_growth) ** (yr - 1)
         ebitda_schedule.append(yr_ebitda)
 
-        # Simplified: FCF = EBITDA * 0.5 (rough proxy for taxes, capex, WC)
-        # minus interest, minus mandatory amortization
         interest = debt_balance * interest_rate
         mandatory_amort = entry_debt * amortization_pct
-        fcf_for_paydown = yr_ebitda * 0.5 - interest
+
+        if detailed_fcf:
+            da = yr_ebitda * (da_pct or 0.10)
+            ebit = yr_ebitda - da
+            taxes = max(0, (ebit - interest)) * tax_rate
+            capex = yr_ebitda * (capex_pct or 0.10)
+            delta_nwc = (yr_ebitda - prev_ebitda) * (nwc_pct or 0.05)
+            fcf_for_paydown = yr_ebitda - taxes - capex - delta_nwc - interest
+        else:
+            fcf_for_paydown = yr_ebitda * 0.5 - interest
+
         total_paydown = min(debt_balance, max(0, fcf_for_paydown) + mandatory_amort)
         debt_balance = max(0, debt_balance - total_paydown)
         debt_schedule.append(debt_balance)
@@ -93,10 +109,16 @@ def main():
     parser.add_argument("--rate", type=float, default=0.06, help="Interest rate (default: 0.06)")
     parser.add_argument("--growth", type=float, default=0.05, help="EBITDA growth (default: 0.05)")
     parser.add_argument("--years", type=int, default=5, help="Hold period (default: 5)")
+    parser.add_argument("--tax-rate", type=float, default=None, help="Tax rate (enables detailed FCF)")
+    parser.add_argument("--capex-pct", type=float, default=None, help="CapEx %% of EBITDA (default: 10%%)")
+    parser.add_argument("--nwc-pct", type=float, default=None, help="NWC change %% of EBITDA growth (default: 5%%)")
+    parser.add_argument("--da-pct", type=float, default=None, help="D&A %% of EBITDA (default: 10%%)")
     args = parser.parse_args()
 
     r = lbo_returns(args.ebitda, args.entry_multiple, args.exit_multiple,
-                    args.leverage, args.rate, args.growth, args.years)
+                    args.leverage, args.rate, args.growth, args.years,
+                    tax_rate=args.tax_rate, capex_pct=args.capex_pct,
+                    nwc_pct=args.nwc_pct, da_pct=args.da_pct)
 
     print(f"\n{'='*50}")
     print(f"  LBO Returns Analysis")

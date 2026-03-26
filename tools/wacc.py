@@ -9,8 +9,9 @@ import argparse
 
 def wacc(equity_value: float, debt_value: float, tax_rate: float,
          risk_free: float, beta: float, equity_risk_premium: float,
-         cost_of_debt: float) -> dict:
-    """Calculate WACC using CAPM for cost of equity.
+         cost_of_debt: float, size_premium: float = 0.0,
+         country_risk: float = 0.0, alpha: float = 0.0) -> dict:
+    """Calculate WACC using CAPM build-up for cost of equity.
 
     Args:
         equity_value: Market value of equity.
@@ -20,6 +21,9 @@ def wacc(equity_value: float, debt_value: float, tax_rate: float,
         beta: Levered beta.
         equity_risk_premium: Equity risk premium.
         cost_of_debt: Pre-tax cost of debt.
+        size_premium: Small-cap size premium (default: 0).
+        country_risk: Country risk premium (default: 0).
+        alpha: Company-specific alpha/risk (default: 0).
 
     Returns:
         Dict with WACC, cost of equity, weights, and unlevered beta.
@@ -28,8 +32,8 @@ def wacc(equity_value: float, debt_value: float, tax_rate: float,
     weight_equity = equity_value / total_value if total_value else 0
     weight_debt = debt_value / total_value if total_value else 0
 
-    # CAPM: r_e = r_f + beta * ERP
-    cost_of_equity = risk_free + beta * equity_risk_premium
+    # CAPM build-up: r_e = r_f + beta * ERP + size + country + alpha
+    cost_of_equity = risk_free + beta * equity_risk_premium + size_premium + country_risk + alpha
 
     # After-tax cost of debt
     after_tax_debt = cost_of_debt * (1 - tax_rate)
@@ -50,6 +54,9 @@ def wacc(equity_value: float, debt_value: float, tax_rate: float,
         "debt_to_equity": de_ratio,
         "unlevered_beta": unlevered_beta,
         "total_value": total_value,
+        "size_premium": size_premium,
+        "country_risk": country_risk,
+        "alpha": alpha,
     }
 
 
@@ -62,9 +69,13 @@ def main():
     parser.add_argument("--beta", type=float, required=True, help="Levered beta")
     parser.add_argument("--erp", type=float, required=True, help="Equity risk premium")
     parser.add_argument("--cost-of-debt", type=float, required=True, help="Pre-tax cost of debt")
+    parser.add_argument("--size-premium", type=float, default=0.0, help="Size premium (default: 0)")
+    parser.add_argument("--country-risk", type=float, default=0.0, help="Country risk premium (default: 0)")
+    parser.add_argument("--alpha", type=float, default=0.0, help="Company-specific alpha (default: 0)")
     args = parser.parse_args()
 
-    r = wacc(args.equity, args.debt, args.tax, args.rf, args.beta, args.erp, args.cost_of_debt)
+    r = wacc(args.equity, args.debt, args.tax, args.rf, args.beta, args.erp,
+             args.cost_of_debt, args.size_premium, args.country_risk, args.alpha)
 
     print(f"\n{'='*50}")
     print(f"  WACC Calculation")
@@ -80,6 +91,12 @@ def main():
     print(f"    Beta (levered):  {args.beta:>10.2f}")
     print(f"    Beta (unlevered):{r['unlevered_beta']:>10.2f}")
     print(f"    Equity Risk Prem:{args.erp*100:>10.2f}%")
+    if r['size_premium'] > 0:
+        print(f"    Size Premium:    {r['size_premium']*100:>10.2f}%")
+    if r['country_risk'] > 0:
+        print(f"    Country Risk:    {r['country_risk']*100:>10.2f}%")
+    if r['alpha'] > 0:
+        print(f"    Alpha:           {r['alpha']*100:>10.2f}%")
     print(f"    Cost of Equity:  {r['cost_of_equity']*100:>10.2f}%")
     print(f"{'─'*50}")
     print(f"  Cost of Debt:")

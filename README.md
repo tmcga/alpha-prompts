@@ -20,19 +20,56 @@ Pick your desk and start prompting:
 
 **Start here:** The [Cross-Reference Guide](ai-prompts/cross-reference-guide.md) shows how the same event looks through 5 different desk lenses — 24 perspectives total.
 
-## Finance Tools
+## Finance Tools (19)
 
-Standalone Python scripts with zero external dependencies. Run from the command line or import as modules.
+Standalone Python calculators with zero external dependencies. Run from the command line or import as modules.
 
-| Tool | What It Does | Example |
-|------|-------------|---------|
-| [dcf.py](tools/dcf.py) | DCF valuation with sensitivity tables | `python tools/dcf.py --fcf 100,110,121 --wacc 0.10 --terminal-growth 0.025` |
-| [lbo.py](tools/lbo.py) | LBO returns (MOIC, IRR, attribution) | `python tools/lbo.py --ebitda 100 --entry-multiple 10 --leverage 5` |
-| [black_scholes.py](tools/black_scholes.py) | Options pricing with full Greeks | `python tools/black_scholes.py --spot 100 --strike 105 --vol 0.2` |
-| [wacc.py](tools/wacc.py) | WACC calculator with CAPM | `python tools/wacc.py --equity 1000 --debt 500 --beta 1.2` |
-| [bond_yield.py](tools/bond_yield.py) | YTM, duration, convexity, DV01 | `python tools/bond_yield.py --face 1000 --coupon 0.05 --price 980` |
-| [portfolio_risk.py](tools/portfolio_risk.py) | Sharpe, Sortino, max drawdown, VaR | `python tools/portfolio_risk.py --returns 0.02,-0.01,0.03,0.01` |
-| [merger_arb.py](tools/merger_arb.py) | Merger arb spread and implied probability | `python tools/merger_arb.py --current 45 --offer 50 --days 90` |
+**Valuation & Corporate Finance**
+| Tool | What It Does |
+|------|-------------|
+| [dcf.py](tools/dcf.py) | DCF valuation — Gordon Growth or exit multiple, with sensitivity tables |
+| [lbo.py](tools/lbo.py) | LBO returns — MOIC, IRR, attribution, detailed FCF build |
+| [wacc.py](tools/wacc.py) | WACC — CAPM build-up with size premium, country risk |
+
+**Options & Derivatives**
+| Tool | What It Does |
+|------|-------------|
+| [black_scholes.py](tools/black_scholes.py) | Options pricing — Greeks, vanna, charm, dividend yield |
+| [implied_vol.py](tools/implied_vol.py) | Implied volatility solver from market prices |
+| [convertible.py](tools/convertible.py) | Convertible bond pricer — bond floor, parity, embedded option |
+
+**Fixed Income & Credit**
+| Tool | What It Does |
+|------|-------------|
+| [bond_yield.py](tools/bond_yield.py) | Bond analytics — YTM, duration, convexity, DV01, G/Z-spread |
+| [merton_model.py](tools/merton_model.py) | Structural credit model — distance to default, credit spreads |
+| [credit_spread.py](tools/credit_spread.py) | Credit analysis — Altman Z-Score, hazard rates, default probabilities |
+
+**Portfolio & Risk**
+| Tool | What It Does |
+|------|-------------|
+| [portfolio_risk.py](tools/portfolio_risk.py) | Risk metrics — Sharpe, Sortino, VaR, CVaR, benchmark-relative |
+| [kelly.py](tools/kelly.py) | Kelly criterion — optimal position sizing, drawdown risk |
+| [brinson.py](tools/brinson.py) | Brinson-Fachler performance attribution |
+| [black_litterman.py](tools/black_litterman.py) | Black-Litterman portfolio optimizer with investor views |
+| [monte_carlo.py](tools/monte_carlo.py) | Monte Carlo simulation — portfolio growth, retirement planning |
+
+**M&A & Special Situations**
+| Tool | What It Does |
+|------|-------------|
+| [merger_arb.py](tools/merger_arb.py) | Merger arb — spreads, implied probability, collar, CVR |
+
+**Real Estate, VC & Lending**
+| Tool | What It Does |
+|------|-------------|
+| [cap_rate.py](tools/cap_rate.py) | Real estate valuation — cap rate, NOI, development spread |
+| [vc_returns.py](tools/vc_returns.py) | VC fund returns (TVPI/DPI/RVPI/IRR) and dilution waterfall |
+| [loan_amort.py](tools/loan_amort.py) | Loan amortization — payment schedule, early payoff savings |
+
+**Quantitative Trading**
+| Tool | What It Does |
+|------|-------------|
+| [market_maker.py](tools/market_maker.py) | Avellaneda-Stoikov optimal quoting — reservation price, spread |
 
 No dependencies required — just Python 3.10+.
 

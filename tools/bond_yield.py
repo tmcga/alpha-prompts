@@ -5,7 +5,6 @@ Usage:
     python bond_yield.py --face 1000 --coupon 0.05 --price 980 --years 10 --freq 2
 """
 import argparse
-import math
 
 
 def bond_ytm(face: float, coupon_rate: float, price: float, years: float,
@@ -46,12 +45,13 @@ def bond_ytm(face: float, coupon_rate: float, price: float, years: float,
 
 
 def bond_analytics(face: float, coupon_rate: float, price: float,
-                   years: float, freq: int = 2) -> dict:
+                   years: float, freq: int = 2,
+                   benchmark_yield: float = None) -> dict:
     """Calculate full bond analytics.
 
     Returns:
         Dict with current yield, YTM, modified duration, Macaulay duration,
-        convexity, and DV01.
+        convexity, DV01, and spread metrics.
     """
     coupon = face * coupon_rate / freq
     n = int(years * freq)
@@ -87,6 +87,25 @@ def bond_analytics(face: float, coupon_rate: float, price: float,
     # DV01 (dollar value of a basis point)
     dv01 = mod_duration * price / 10000
 
+    # Spread metrics
+    g_spread = ytm - benchmark_yield if benchmark_yield is not None else None
+
+    # Z-spread approximation (constant spread over flat benchmark curve)
+    z_spread = None
+    if benchmark_yield is not None:
+        zs_low, zs_high = 0.0, 0.10
+        for _ in range(100):
+            zs_mid = (zs_low + zs_high) / 2
+            pv = 0
+            for t in range(1, n + 1):
+                cf = coupon if t < n else coupon + face
+                pv += cf / (1 + (benchmark_yield + zs_mid) / freq) ** t
+            if pv > price:
+                zs_low = zs_mid
+            else:
+                zs_high = zs_mid
+        z_spread = (zs_low + zs_high) / 2
+
     return {
         "current_yield": current_yield,
         "ytm": ytm,
@@ -95,6 +114,8 @@ def bond_analytics(face: float, coupon_rate: float, price: float,
         "convexity": convexity,
         "dv01": dv01,
         "periods": n,
+        "g_spread": g_spread,
+        "z_spread": z_spread,
     }
 
 
@@ -105,9 +126,11 @@ def main():
     parser.add_argument("--price", type=float, required=True, help="Market price")
     parser.add_argument("--years", type=float, required=True, help="Years to maturity")
     parser.add_argument("--freq", type=int, default=2, help="Coupons per year (default: 2)")
+    parser.add_argument("--benchmark-yield", type=float, default=None, help="Benchmark yield for spread calc")
     args = parser.parse_args()
 
-    r = bond_analytics(args.face, args.coupon, args.price, args.years, args.freq)
+    r = bond_analytics(args.face, args.coupon, args.price, args.years, args.freq,
+                       args.benchmark_yield)
 
     print(f"\n{'='*50}")
     print(f"  Bond Analytics")
@@ -123,6 +146,10 @@ def main():
     print(f"  Modified Dur:    {r['modified_duration']:>10.3f}")
     print(f"  Convexity:       {r['convexity']:>10.3f}")
     print(f"  DV01:            ${r['dv01']:>10.4f}")
+    if r['g_spread'] is not None:
+        print(f"{'─'*50}")
+        print(f"  G-Spread:        {r['g_spread']*10000:>10.1f} bps")
+        print(f"  Z-Spread:        {r['z_spread']*10000:>10.1f} bps")
     print(f"{'='*50}\n")
 
 
