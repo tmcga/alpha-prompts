@@ -1,6 +1,6 @@
 # Alpha Stack
 
-This is **Alpha Stack** — an installable AI skill system for finance. 22 skills, 19 computational tools, and a structured workflow for investment analysis.
+This is **Alpha Stack** — an installable AI skill system for finance. 26 skills, 19 computational tools, and a structured workflow for investment analysis.
 
 ## Skill Registry
 
@@ -49,6 +49,14 @@ This is **Alpha Stack** — an installable AI skill system for finance. 22 skill
 | Command | Skill | What It Does |
 |---------|-------|-------------|
 | `/quant` | quant-signals | Strategy dev (signals, backtesting, regime detection, LLM sentiment) |
+
+**CFO & Corporate Finance**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/budget` | budget | Annual budget build, variance analysis, zero-based budgeting |
+| `/forecast` | forecast | Rolling forecasts, cash flow, scenario planning, revenue modeling |
+| `/board-deck` | board-deck | Board reporting, KPI dashboards, investor updates, earnings prep |
+| `/fpa` | fpa | FP&A, unit economics, SaaS metrics, headcount modeling, strategic finance |
 
 ## The Alpha Stack Workflow
 
@@ -104,7 +112,7 @@ When analyzing a company, event, or market move, offer to show it through multip
 ## Repo Structure
 
 ```
-skills/          22 skill directories, each with SKILL.md + prompts/
+skills/          26 skill directories, each with SKILL.md + prompts/
 tools/           19 standalone Python calculators (stdlib-only, <200 lines each)
 mcp_server.py    MCP server exposing all tools for Claude Desktop
 docs/            Workflow documentation

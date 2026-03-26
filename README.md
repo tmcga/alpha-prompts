@@ -2,7 +2,7 @@
 
 > What if every analyst had a senior MD's frameworks, a quant's toolkit, and a risk officer's discipline — loaded into their terminal?
 
-**Alpha Stack** is an installable AI skill system for finance. 22 skills covering every major Wall Street desk, 19 computational tools with zero dependencies, and a structured workflow for investment analysis — from sourcing ideas to monitoring positions.
+**Alpha Stack** is an installable AI skill system for finance. 26 skills covering every major Wall Street desk and corporate finance function, 19 computational tools with zero dependencies, and a structured workflow for investment analysis — from sourcing ideas to monitoring positions.
 
 It turns Claude Code into a **virtual finance team**: an M&A banker who builds merger models, a derivatives trader who thinks in Greeks, a portfolio manager who optimizes with Black-Litterman, and a risk officer who stress-tests everything with Monte Carlo.
 
@@ -41,7 +41,7 @@ Every analysis follows six phases:
 
 ---
 
-## 22 Skills
+## 26 Skills
 
 **Deal & Banking**
 | Command | What It Does |
@@ -89,7 +89,15 @@ Every analysis follows six phases:
 |---------|-------------|
 | `/quant` | Strategy development — signals, backtesting, overfitting detection, LLM sentiment, regime |
 
-Each skill is a **300-800+ line execution pipeline** with phased workflows, decision gates, tool integration, output specifications, quality gates, hard constraints, and common pitfalls.
+**CFO & Corporate Finance**
+| Command | What It Does |
+|---------|-------------|
+| `/budget` | Annual budget build, variance analysis, zero-based budgeting, departmental review |
+| `/forecast` | Rolling forecasts, 13-week cash flow, scenario planning, revenue modeling |
+| `/board-deck` | Board reporting, KPI dashboards, investor updates, earnings prep |
+| `/fpa` | FP&A — unit economics, SaaS metrics, headcount modeling, strategic finance |
+
+Each skill is a **300-870+ line execution pipeline** with phased workflows, decision gates, tool integration, output specifications, quality gates, hard constraints, and common pitfalls.
 
 ---
 
@@ -242,12 +250,12 @@ alpha-stack/
 ├── setup-mcp.sh           Claude Desktop MCP installer
 ├── mcp_server.py          MCP server (23 tools for Claude Desktop)
 ├── pyproject.toml         Python dependencies (mcp SDK)
-├── skills/                22 skill directories (SKILL.md + prompts/)
+├── skills/                26 skill directories (SKILL.md + prompts/)
 │   ├── sell-side/         782 lines — full M&A process
 │   ├── lbo/               843 lines — LBO modeling pipeline
 │   ├── long-short/        726 lines — L/S equity analysis
 │   ├── pitch-deck/        372 lines — pitch deck builder
-│   └── ... (18 more)
+│   └── ... (22 more)
 ├── tools/                 19 Python calculators (stdlib-only)
 ├── tests/                 53 pytest tests
 └── docs/                  Workflow documentation
