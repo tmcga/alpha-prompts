@@ -134,7 +134,7 @@ def main():
         r = fund_metrics(contribs, dists, args.nav, args.years)
 
         print(f"\n{'='*50}")
-        print(f"  VC Fund Performance")
+        print("  VC Fund Performance")
         print(f"{'='*50}")
         print(f"  Total Contributed: ${r['total_contributed']:>10,.1f}M")
         print(f"  Total Distributed: ${r['total_distributed']:>10,.1f}M")
@@ -145,7 +145,7 @@ def main():
         print(f"  RVPI:              {r['rvpi']:>10.2f}x")
         print(f"  Net IRR:           {r['net_irr']*100:>10.1f}%")
         print(f"{'─'*50}")
-        print(f"  J-Curve (cumulative net CF):")
+        print("  J-Curve (cumulative net CF):")
         mx = max(abs(v) for v in r['j_curve'])
         for i, val in enumerate(r['j_curve']):
             bar_len = max(1, int(abs(val) / mx * 15)) if mx > 0 else 1
@@ -166,7 +166,7 @@ def main():
         r = dilution_waterfall(rounds, args.founder_shares)
 
         print(f"\n{'='*60}")
-        print(f"  Dilution Waterfall")
+        print("  Dilution Waterfall")
         print(f"{'='*60}")
         print(f"  Initial Founder Shares: {r['founder_shares']:>12,}")
         print(f"{'─'*60}")

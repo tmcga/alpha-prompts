@@ -150,7 +150,7 @@ def main():
     r = black_litterman(weights, cov, args.risk_aversion, args.tau, P, Q, asset_names=names)
 
     print(f"\n{'='*65}")
-    print(f"  Black-Litterman Portfolio Optimization")
+    print("  Black-Litterman Portfolio Optimization")
     print(f"{'='*65}")
     print(f"  Risk Aversion: {r['risk_aversion']:.2f}    Tau: {r['tau']:.3f}")
     print(f"{'─'*65}")

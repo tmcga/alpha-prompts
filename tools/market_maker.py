@@ -91,7 +91,7 @@ def main():
     r = optimal_quotes(args.mid, args.inventory, args.gamma, args.vol, args.time, args.intensity)
 
     print(f"\n{'='*50}")
-    print(f"  Avellaneda-Stoikov Market Maker")
+    print("  Avellaneda-Stoikov Market Maker")
     print(f"{'='*50}")
     print(f"  Mid Price:         ${r['mid_price']:>10.4f}")
     print(f"  Inventory:         {r['inventory']:>+10d}")

@@ -132,9 +132,9 @@ def main():
         r = multi_outcome_kelly(outcomes)
 
         print(f"\n{'='*50}")
-        print(f"  Kelly Criterion: Multi-Outcome")
+        print("  Kelly Criterion: Multi-Outcome")
         print(f"{'='*50}")
-        print(f"  Outcomes:")
+        print("  Outcomes:")
         for i, (prob, payoff) in enumerate(outcomes, 1):
             print(f"    {i}. P={prob:.2f}  Payoff={payoff:+.2f}")
         print(f"{'─'*50}")
@@ -148,7 +148,7 @@ def main():
         r = kelly_criterion(args.win_prob, args.win_loss_ratio, args.fraction)
 
         print(f"\n{'='*50}")
-        print(f"  Kelly Criterion: Position Sizing")
+        print("  Kelly Criterion: Position Sizing")
         print(f"{'='*50}")
         print(f"  Win Probability:    {r['win_probability']*100:>10.1f}%")
         print(f"  Win/Loss Ratio:     {r['win_loss_ratio']:>10.2f}x")
@@ -161,7 +161,7 @@ def main():
         print(f"  Exp Return/Bet:     {r['edge']*100:>+10.2f}%")
         print(f"  Geo Growth Rate:    {r['geometric_growth_rate']*100:>10.4f}%")
         print(f"{'─'*50}")
-        print(f"  Drawdown Risk (at full Kelly):")
+        print("  Drawdown Risk (at full Kelly):")
         print(f"    P(50% drawdown):  {r['prob_50pct_drawdown']*100:>10.1f}%")
         print(f"    P(75% drawdown):  {r['prob_75pct_drawdown']*100:>10.1f}%")
         print(f"{'='*50}\n")

@@ -138,7 +138,7 @@ def main():
                        args.benchmark_yield)
 
     print(f"\n{'='*50}")
-    print(f"  Bond Analytics")
+    print("  Bond Analytics")
     print(f"{'='*50}")
     print(f"  Face Value:      ${args.face:>10,.2f}")
     print(f"  Coupon Rate:     {args.coupon*100:>10.3f}%")

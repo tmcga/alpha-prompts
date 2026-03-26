@@ -118,7 +118,7 @@ def main():
                          args.stock, args.ratio, args.vol, args.rate)
 
     print(f"\n{'='*50}")
-    print(f"  Convertible Bond Analysis")
+    print("  Convertible Bond Analysis")
     print(f"{'='*50}")
     print(f"  Face Value:        ${args.face:>10,.2f}")
     print(f"  Coupon:            {args.coupon*100:>10.2f}%")

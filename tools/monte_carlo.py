@@ -139,7 +139,7 @@ def main():
     if args.contribution > 0:
         print(f"  Annual Contrib:    ${args.contribution:>12,.0f}")
     print(f"{'─'*50}")
-    print(f"  Terminal Value Distribution:")
+    print("  Terminal Value Distribution:")
     print(f"    1st Percentile:  ${r['percentile_1']:>12,.0f}")
     print(f"    5th Percentile:  ${r['percentile_5']:>12,.0f}")
     print(f"   10th Percentile:  ${r['percentile_10']:>12,.0f}")

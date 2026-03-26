@@ -122,23 +122,23 @@ def main():
         r = altman_zscore(args.wc_ta, args.re_ta, args.ebit_ta, args.eq_debt, args.sales_ta)
 
         print(f"\n{'='*50}")
-        print(f"  Altman Z-Score Analysis")
+        print("  Altman Z-Score Analysis")
         print(f"{'='*50}")
-        print(f"  Components:")
+        print("  Components:")
         for name, val in r['components'].items():
             print(f"    {name:<20} {val:>8.4f}")
         print(f"{'─'*50}")
         print(f"  Z-Score:           {r['z_score']:>10.4f}")
         print(f"  Zone:              {r['zone']:>10}")
         print(f"  Assessment:        {r['description']}")
-        print(f"  Thresholds:        >2.99 Safe | 1.81-2.99 Grey | <1.81 Distress")
+        print("  Thresholds:        >2.99 Safe | 1.81-2.99 Grey | <1.81 Distress")
         print(f"{'='*50}\n")
 
     elif args.spread is not None:
         r = credit_from_spread(args.spread, args.recovery, args.maturity)
 
         print(f"\n{'='*50}")
-        print(f"  Credit Spread Analysis")
+        print("  Credit Spread Analysis")
         print(f"{'='*50}")
         print(f"  CDS Spread:        {r['cds_spread_bps']:>10.0f} bps")
         print(f"  Recovery Rate:     {r['recovery_rate']*100:>10.1f}%")
@@ -147,7 +147,7 @@ def main():
         print(f"  Hazard Rate:       {r['hazard_rate']*100:>10.2f}%")
         print(f"  Annual PD:         {r['annual_default_prob']*100:>10.2f}%")
         print(f"{'─'*50}")
-        print(f"  Cumulative Default Probabilities:")
+        print("  Cumulative Default Probabilities:")
         for yr, pd in r['cumulative_default_probs'].items():
             print(f"    Year {yr}:          {pd*100:>10.2f}%")
         print(f"{'─'*50}")

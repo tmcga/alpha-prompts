@@ -107,7 +107,7 @@ def main():
     r = brinson_attribution(pw, pr, bw, br, names)
 
     print(f"\n{'='*70}")
-    print(f"  Brinson-Fachler Performance Attribution")
+    print("  Brinson-Fachler Performance Attribution")
     print(f"{'='*70}")
     print(f"  Portfolio Return:   {r['portfolio_return']*100:>+8.2f}%")
     print(f"  Benchmark Return:   {r['benchmark_return']*100:>+8.2f}%")

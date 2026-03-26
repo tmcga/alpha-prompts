@@ -107,7 +107,7 @@ def main():
     r = merton_model(args.assets, args.debt, args.vol, args.rate, args.maturity)
 
     print(f"\n{'='*50}")
-    print(f"  Merton Credit Model")
+    print("  Merton Credit Model")
     print(f"{'='*50}")
     print(f"  Asset Value:       ${args.assets:>10,.1f}")
     print(f"  Debt Face Value:   ${args.debt:>10,.1f}")

@@ -121,7 +121,7 @@ def main():
                     nwc_pct=args.nwc_pct, da_pct=args.da_pct)
 
     print(f"\n{'='*50}")
-    print(f"  LBO Returns Analysis")
+    print("  LBO Returns Analysis")
     print(f"{'='*50}")
     print(f"  Entry EV:        ${r['entry_ev']:>10,.1f}  ({args.entry_multiple:.1f}x EBITDA)")
     print(f"  Entry Debt:      ${r['entry_debt']:>10,.1f}  ({args.leverage:.1f}x EBITDA)")
@@ -136,7 +136,7 @@ def main():
     print(f"  IRR:             {r['irr']*100:>10.1f}%")
     print(f"  Debt Paydown:    ${r['debt_paydown']:>10,.1f}")
     print(f"{'─'*50}")
-    print(f"  Returns Attribution:")
+    print("  Returns Attribution:")
     a = r['attribution']
     total = a['ebitda_growth'] + a['multiple_change'] + a['deleveraging']
     for label, val in [("EBITDA Growth", a['ebitda_growth']),

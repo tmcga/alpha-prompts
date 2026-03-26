@@ -99,7 +99,7 @@ def main():
     r = loan_amortization(args.principal, args.rate, args.years, args.extra)
 
     print(f"\n{'='*50}")
-    print(f"  Loan Amortization")
+    print("  Loan Amortization")
     print(f"{'='*50}")
     print(f"  Principal:         ${r['principal']:>12,.2f}")
     print(f"  Interest Rate:     {r['annual_rate']*100:>12.3f}%")
@@ -118,7 +118,7 @@ def main():
         print(f"  Months Saved:      {r['months_saved']:>12d}")
         print(f"  Interest Saved:    ${r['interest_saved']:>12,.2f}")
     print(f"{'─'*50}")
-    print(f"  Annual Balance Summary:")
+    print("  Annual Balance Summary:")
     print(f"    {'Year':>4}  {'Balance':>14}  {'Cum Interest':>14}  {'Cum Principal':>14}")
     for s in r['schedule'][:10]:
         print(f"    {s['year']:>4}  ${s['balance']:>13,.2f}  ${s['cumulative_interest']:>13,.2f}"
