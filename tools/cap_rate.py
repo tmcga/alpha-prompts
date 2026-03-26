@@ -56,7 +56,7 @@ def real_estate_valuation(
                 "cap_rate": adj_cap,
                 "value": adj_value,
                 "change": adj_value - property_value,
-                "change_pct": (adj_value - property_value) / property_value * 100,
+                "change_pct": (adj_value - property_value) / property_value * 100 if property_value else 0.0,
             }
 
     # Development spread

@@ -30,6 +30,8 @@ def dcf_valuation(
     Returns:
         Dict with enterprise value, equity value, price per share, and breakdown.
     """
+    if not fcfs:
+        raise ValueError("FCF list must not be empty")
     if terminal_growth is None and exit_multiple is None:
         raise ValueError("Provide either terminal_growth or exit_multiple")
     if terminal_growth is not None and wacc <= terminal_growth:

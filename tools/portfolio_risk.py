@@ -111,6 +111,8 @@ def benchmark_relative(returns: list[float], benchmark: list[float], periods_per
         Dict with tracking error, information ratio, active return.
     """
     n = min(len(returns), len(benchmark))
+    if n < 2:
+        raise ValueError("Need at least 2 observations for benchmark-relative metrics")
     active = [returns[i] - benchmark[i] for i in range(n)]
 
     mean_active = sum(active) / n
