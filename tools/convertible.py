@@ -4,6 +4,7 @@
 Usage:
     python convertible.py --face 1000 --coupon 0.02 --maturity 5 --spread 0.03 --stock 50 --ratio 15 --vol 0.30 --rate 0.04
 """
+
 import argparse
 import math
 
@@ -13,10 +14,16 @@ def norm_cdf(x: float) -> float:
     return 0.5 * (1 + math.erf(x / math.sqrt(2)))
 
 
-def convertible_bond(face: float, coupon_rate: float, maturity: float,
-                     credit_spread: float, stock_price: float,
-                     conversion_ratio: float, stock_vol: float,
-                     risk_free: float) -> dict:
+def convertible_bond(
+    face: float,
+    coupon_rate: float,
+    maturity: float,
+    credit_spread: float,
+    stock_price: float,
+    conversion_ratio: float,
+    stock_vol: float,
+    risk_free: float,
+) -> dict:
     """Price a convertible bond as bond floor + embedded call option.
 
     Args:
@@ -48,8 +55,9 @@ def convertible_bond(face: float, coupon_rate: float, maturity: float,
     # Strike = face value (bondholder gives up face to convert)
     effective_strike = face / conversion_ratio  # per-share conversion price
     if maturity > 0 and stock_vol > 0:
-        d1 = (math.log(stock_price / effective_strike) + (risk_free + 0.5 * stock_vol ** 2) * maturity) / \
-             (stock_vol * math.sqrt(maturity))
+        d1 = (math.log(stock_price / effective_strike) + (risk_free + 0.5 * stock_vol**2) * maturity) / (
+            stock_vol * math.sqrt(maturity)
+        )
         d2 = d1 - stock_vol * math.sqrt(maturity)
         call_per_share = stock_price * norm_cdf(d1) - effective_strike * math.exp(-risk_free * maturity) * norm_cdf(d2)
         option_delta = norm_cdf(d1)
@@ -69,7 +77,7 @@ def convertible_bond(face: float, coupon_rate: float, maturity: float,
     # (Assumes stock pays no dividend)
     income_advantage = coupon  # convertible coupon - stock dividend (assumed 0)
     premium_dollars = theoretical_value - parity
-    breakeven_years = premium_dollars / income_advantage if income_advantage > 0 else float('inf')
+    breakeven_years = premium_dollars / income_advantage if income_advantage > 0 else float("inf")
 
     # Profile classification
     bond_pct = bond_floor / theoretical_value * 100 if theoretical_value > 0 else 0
@@ -114,33 +122,34 @@ def main():
     parser.add_argument("--rate", type=float, default=0.04, help="Risk-free rate (default: 0.04)")
     args = parser.parse_args()
 
-    r = convertible_bond(args.face, args.coupon, args.maturity, args.spread,
-                         args.stock, args.ratio, args.vol, args.rate)
+    r = convertible_bond(
+        args.face, args.coupon, args.maturity, args.spread, args.stock, args.ratio, args.vol, args.rate
+    )
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("  Convertible Bond Analysis")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Face Value:        ${args.face:>10,.2f}")
-    print(f"  Coupon:            {args.coupon*100:>10.2f}%")
+    print(f"  Coupon:            {args.coupon * 100:>10.2f}%")
     print(f"  Maturity:          {args.maturity:>10.1f} years")
-    print(f"  Credit Spread:     {args.spread*100:>10.2f}%")
+    print(f"  Credit Spread:     {args.spread * 100:>10.2f}%")
     print(f"  Stock Price:       ${args.stock:>10.2f}")
     print(f"  Conversion Ratio:  {args.ratio:>10.1f}")
     print(f"  Conversion Price:  ${r['conversion_price']:>10.2f}")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  Bond Floor:        ${r['bond_floor']:>10.2f}  ({r['bond_component_pct']:.1f}%)")
     print(f"  Parity:            ${r['parity']:>10.2f}")
     print(f"  Embedded Option:   ${r['embedded_option']:>10.2f}  ({r['equity_component_pct']:.1f}%)")
     print(f"  Theoretical Value: ${r['theoretical_value']:>10.2f}")
-    print(f"{'─'*50}")
-    print(f"  Conv Premium:      {r['conversion_premium']*100:>10.1f}%  (${r['conversion_premium_dollars']:.2f})")
-    bev = f"{r['breakeven_years']:.1f}y" if r['breakeven_years'] < 100 else "N/A"
+    print(f"{'─' * 50}")
+    print(f"  Conv Premium:      {r['conversion_premium'] * 100:>10.1f}%  (${r['conversion_premium_dollars']:.2f})")
+    bev = f"{r['breakeven_years']:.1f}y" if r["breakeven_years"] < 100 else "N/A"
     print(f"  Breakeven:         {bev:>10}")
     print(f"  Profile:           {r['profile']:>10}")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  Delta (total):     {r['delta']:>10.2f}")
     print(f"  Delta (per share): {r['delta_per_share']:>10.4f}")
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

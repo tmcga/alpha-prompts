@@ -5,12 +5,19 @@ Usage:
     python merger_arb.py --current 45 --offer 50 --days 90 --type cash
     python merger_arb.py --current 45 --offer-ratio 0.5 --acquirer-price 110 --days 120 --type stock
 """
+
 import argparse
 
 
-def merger_arb(current_price: float, offer_price: float, days_to_close: int,
-               risk_free: float = 0.05, downside_price: float | None = None,
-               cvr_value: float = 0.0, cvr_prob: float = 0.0) -> dict:
+def merger_arb(
+    current_price: float,
+    offer_price: float,
+    days_to_close: int,
+    risk_free: float = 0.05,
+    downside_price: float | None = None,
+    cvr_value: float = 0.0,
+    cvr_prob: float = 0.0,
+) -> dict:
     """Calculate merger arbitrage spread and implied probabilities.
 
     Args:
@@ -56,7 +63,7 @@ def merger_arb(current_price: float, offer_price: float, days_to_close: int,
     breakeven_probability = max(0, min(1, breakeven_probability))
 
     # Risk-reward ratio
-    risk_reward = abs(upside / downside) if downside != 0 else float('inf')
+    risk_reward = abs(upside / downside) if downside != 0 else float("inf")
 
     return {
         "gross_spread": gross_spread,
@@ -104,12 +111,11 @@ def main():
         else:
             offer_price = args.offer_ratio * acq
 
-    r = merger_arb(args.current, offer_price, args.days, args.rf, args.downside,
-                   args.cvr, args.cvr_prob)
+    r = merger_arb(args.current, offer_price, args.days, args.rf, args.downside, args.cvr, args.cvr_prob)
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  Merger Arb Analysis ({args.deal_type.upper()} deal)")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Current Price:       ${args.current:>10.2f}")
     print(f"  Offer Price:         ${offer_price:>10.2f}")
     if args.deal_type == "stock":
@@ -119,21 +125,21 @@ def main():
             print(f"  Collar Floor:        ${args.collar_low:>10.2f}")
         if args.collar_high is not None:
             print(f"  Collar Cap:          ${args.collar_high:>10.2f}")
-    if r['cvr_expected_value'] > 0:
+    if r["cvr_expected_value"] > 0:
         print(f"  CVR Expected Value:  ${r['cvr_expected_value']:>10.2f}")
         print(f"  Effective Offer:     ${r['effective_offer']:>10.2f}")
     print(f"  Days to Close:       {r['days_to_close']:>10d}")
-    print(f"{'─'*50}")
-    print(f"  Gross Spread:        {r['gross_spread']*100:>+10.2f}%")
-    print(f"  Annualized Spread:   {r['annualized_spread']*100:>+10.2f}%")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
+    print(f"  Gross Spread:        {r['gross_spread'] * 100:>+10.2f}%")
+    print(f"  Annualized Spread:   {r['annualized_spread'] * 100:>+10.2f}%")
+    print(f"{'─' * 50}")
     print(f"  Upside (if close):   ${r['upside_per_share']:>+10.2f}")
     print(f"  Downside (if break): ${r['downside_per_share']:>+10.2f}")
     print(f"  Risk/Reward:         {r['risk_reward']:>10.2f}x")
-    print(f"{'─'*50}")
-    print(f"  Implied Deal Prob:   {r['implied_probability']*100:>10.1f}%")
-    print(f"  Break-Even Prob:     {r['breakeven_probability']*100:>10.1f}%")
-    print(f"{'='*50}\n")
+    print(f"{'─' * 50}")
+    print(f"  Implied Deal Prob:   {r['implied_probability'] * 100:>10.1f}%")
+    print(f"  Break-Even Prob:     {r['breakeven_probability'] * 100:>10.1f}%")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

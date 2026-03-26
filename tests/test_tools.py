@@ -1,4 +1,5 @@
 """Test suite for all 19 Alpha Stack finance tools (23 functions)."""
+
 import sys
 import os
 import pytest
@@ -261,16 +262,20 @@ class TestKelly:
 class TestBrinson:
     def test_attribution_sums(self):
         r = brinson_attribution(
-            [0.5, 0.5], [0.10, 0.05],
-            [0.5, 0.5], [0.08, 0.06],
+            [0.5, 0.5],
+            [0.10, 0.05],
+            [0.5, 0.5],
+            [0.08, 0.06],
         )
         total = r["total_allocation"] + r["total_selection"] + r["total_interaction"]
         assert abs(total - r["active_return"]) < 1e-10
 
     def test_sector_names(self):
         r = brinson_attribution(
-            [0.5, 0.5], [0.10, 0.05],
-            [0.5, 0.5], [0.08, 0.06],
+            [0.5, 0.5],
+            [0.10, 0.05],
+            [0.5, 0.5],
+            [0.08, 0.06],
             sector_names=["Tech", "Health"],
         )
         assert r["sectors"][0]["name"] == "Tech"
@@ -289,8 +294,10 @@ class TestBlackLitterman:
         r = black_litterman(
             [0.6, 0.4],
             [[0.04, 0.01], [0.01, 0.03]],
-            2.5, 0.05,
-            P=[[1, -1]], Q=[0.02],
+            2.5,
+            0.05,
+            P=[[1, -1]],
+            Q=[0.02],
         )
         # View says asset 1 outperforms asset 2 by 2%
         assert r["posterior_returns"][0] > r["posterior_returns"][1]
@@ -306,13 +313,11 @@ class TestMonteCarlo:
         assert r["percentile_5"] < r["percentile_50"] < r["percentile_95"]
 
     def test_ruin_with_high_withdrawal(self):
-        r = monte_carlo_sim(100000, 0.05, 0.20, 30, num_sims=1000,
-                            withdrawal_rate=0.15, seed=42)
+        r = monte_carlo_sim(100000, 0.05, 0.20, 30, num_sims=1000, withdrawal_rate=0.15, seed=42)
         assert r["ruin_probability"] > 0
 
     def test_goal_probability(self):
-        r = monte_carlo_sim(1000000, 0.07, 0.15, 10, num_sims=1000,
-                            goal=1500000, seed=42)
+        r = monte_carlo_sim(1000000, 0.07, 0.15, 10, num_sims=1000, goal=1500000, seed=42)
         assert r["success_probability"] is not None
         assert 0 <= r["success_probability"] <= 1
 

@@ -5,13 +5,18 @@ Usage:
     python cap_rate.py --noi 5000000 --cap-rate 0.055 --rf 0.04 --growth 0.02
     python cap_rate.py --noi 5000000 --value 90000000
 """
+
 import argparse
 
 
-def real_estate_valuation(noi: float, cap_rate: float | None = None,
-                          property_value: float | None = None,
-                          risk_free: float = 0.04, noi_growth: float = 0.02,
-                          dev_cost: float | None = None) -> dict:
+def real_estate_valuation(
+    noi: float,
+    cap_rate: float | None = None,
+    property_value: float | None = None,
+    risk_free: float = 0.04,
+    noi_growth: float = 0.02,
+    dev_cost: float | None = None,
+) -> dict:
     """Calculate real estate valuation metrics.
 
     Args:
@@ -95,32 +100,31 @@ def main():
 
     r = real_estate_valuation(args.noi, args.cap_rate, args.value, args.rf, args.growth, args.dev_cost)
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("  Real Estate Valuation")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  NOI:               ${r['noi']:>12,.0f}")
-    print(f"  Cap Rate:          {r['cap_rate']*100:>12.2f}%")
+    print(f"  Cap Rate:          {r['cap_rate'] * 100:>12.2f}%")
     print(f"  Property Value:    ${r['property_value']:>12,.0f}")
     print(f"  NOI Multiple:      {r['noi_multiple']:>12.1f}x")
-    print(f"{'─'*50}")
-    d = r['cap_rate_decomposition']
+    print(f"{'─' * 50}")
+    d = r["cap_rate_decomposition"]
     print("  Cap Rate Build-Up:")
-    print(f"    Risk-Free Rate:  {d['risk_free']*100:>12.2f}%")
-    print(f"    Risk Premium:    {d['risk_premium']*100:>12.2f}%")
-    print(f"    Less: Growth:    {d['growth_deduction']*100:>12.2f}%")
-    print(f"    = Cap Rate:      {r['cap_rate']*100:>12.2f}%")
-    if r['yield_on_cost'] is not None:
-        print(f"{'─'*50}")
+    print(f"    Risk-Free Rate:  {d['risk_free'] * 100:>12.2f}%")
+    print(f"    Risk Premium:    {d['risk_premium'] * 100:>12.2f}%")
+    print(f"    Less: Growth:    {d['growth_deduction'] * 100:>12.2f}%")
+    print(f"    = Cap Rate:      {r['cap_rate'] * 100:>12.2f}%")
+    if r["yield_on_cost"] is not None:
+        print(f"{'─' * 50}")
         print("  Development Analysis:")
         print(f"    Dev Cost:        ${args.dev_cost:>12,.0f}")
-        print(f"    Yield on Cost:   {r['yield_on_cost']*100:>12.2f}%")
-        print(f"    Dev Spread:      {r['development_spread']*100:>+12.2f}%")
-    print(f"{'─'*50}")
+        print(f"    Yield on Cost:   {r['yield_on_cost'] * 100:>12.2f}%")
+        print(f"    Dev Spread:      {r['development_spread'] * 100:>+12.2f}%")
+    print(f"{'─' * 50}")
     print("  Cap Rate Sensitivity:")
-    for delta, s in r['sensitivity'].items():
-        print(f"    {delta:>+4d}bps ({s['cap_rate']*100:.2f}%): "
-              f"${s['value']:>12,.0f}  ({s['change_pct']:>+.1f}%)")
-    print(f"{'='*50}\n")
+    for delta, s in r["sensitivity"].items():
+        print(f"    {delta:>+4d}bps ({s['cap_rate'] * 100:.2f}%): ${s['value']:>12,.0f}  ({s['change_pct']:>+.1f}%)")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

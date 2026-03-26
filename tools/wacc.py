@@ -4,13 +4,22 @@
 Usage:
     python wacc.py --equity 1000 --debt 500 --tax 0.25 --rf 0.04 --beta 1.2 --erp 0.055 --cost-of-debt 0.05
 """
+
 import argparse
 
 
-def wacc(equity_value: float, debt_value: float, tax_rate: float,
-         risk_free: float, beta: float, equity_risk_premium: float,
-         cost_of_debt: float, size_premium: float = 0.0,
-         country_risk: float = 0.0, alpha: float = 0.0) -> dict:
+def wacc(
+    equity_value: float,
+    debt_value: float,
+    tax_rate: float,
+    risk_free: float,
+    beta: float,
+    equity_risk_premium: float,
+    cost_of_debt: float,
+    size_premium: float = 0.0,
+    country_risk: float = 0.0,
+    alpha: float = 0.0,
+) -> dict:
     """Calculate WACC using CAPM build-up for cost of equity.
 
     Args:
@@ -74,38 +83,48 @@ def main():
     parser.add_argument("--alpha", type=float, default=0.0, help="Company-specific alpha (default: 0)")
     args = parser.parse_args()
 
-    r = wacc(args.equity, args.debt, args.tax, args.rf, args.beta, args.erp,
-             args.cost_of_debt, args.size_premium, args.country_risk, args.alpha)
+    r = wacc(
+        args.equity,
+        args.debt,
+        args.tax,
+        args.rf,
+        args.beta,
+        args.erp,
+        args.cost_of_debt,
+        args.size_premium,
+        args.country_risk,
+        args.alpha,
+    )
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("  WACC Calculation")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print("  Capital Structure:")
-    print(f"    Equity:          ${args.equity:>10,.0f}  ({r['weight_equity']*100:.1f}%)")
-    print(f"    Debt:            ${args.debt:>10,.0f}  ({r['weight_debt']*100:.1f}%)")
+    print(f"    Equity:          ${args.equity:>10,.0f}  ({r['weight_equity'] * 100:.1f}%)")
+    print(f"    Debt:            ${args.debt:>10,.0f}  ({r['weight_debt'] * 100:.1f}%)")
     print(f"    Total:           ${r['total_value']:>10,.0f}")
     print(f"    D/E Ratio:       {r['debt_to_equity']:>10.2f}x")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print("  Cost of Equity (CAPM):")
-    print(f"    Risk-Free Rate:  {args.rf*100:>10.2f}%")
+    print(f"    Risk-Free Rate:  {args.rf * 100:>10.2f}%")
     print(f"    Beta (levered):  {args.beta:>10.2f}")
     print(f"    Beta (unlevered):{r['unlevered_beta']:>10.2f}")
-    print(f"    Equity Risk Prem:{args.erp*100:>10.2f}%")
-    if r['size_premium'] > 0:
-        print(f"    Size Premium:    {r['size_premium']*100:>10.2f}%")
-    if r['country_risk'] > 0:
-        print(f"    Country Risk:    {r['country_risk']*100:>10.2f}%")
-    if r['alpha'] > 0:
-        print(f"    Alpha:           {r['alpha']*100:>10.2f}%")
-    print(f"    Cost of Equity:  {r['cost_of_equity']*100:>10.2f}%")
-    print(f"{'─'*50}")
+    print(f"    Equity Risk Prem:{args.erp * 100:>10.2f}%")
+    if r["size_premium"] > 0:
+        print(f"    Size Premium:    {r['size_premium'] * 100:>10.2f}%")
+    if r["country_risk"] > 0:
+        print(f"    Country Risk:    {r['country_risk'] * 100:>10.2f}%")
+    if r["alpha"] > 0:
+        print(f"    Alpha:           {r['alpha'] * 100:>10.2f}%")
+    print(f"    Cost of Equity:  {r['cost_of_equity'] * 100:>10.2f}%")
+    print(f"{'─' * 50}")
     print("  Cost of Debt:")
-    print(f"    Pre-tax:         {args.cost_of_debt*100:>10.2f}%")
-    print(f"    Tax rate:        {args.tax*100:>10.1f}%")
-    print(f"    After-tax:       {r['after_tax_cost_of_debt']*100:>10.2f}%")
-    print(f"{'─'*50}")
-    print(f"  WACC:              {r['wacc']*100:>10.2f}%")
-    print(f"{'='*50}\n")
+    print(f"    Pre-tax:         {args.cost_of_debt * 100:>10.2f}%")
+    print(f"    Tax rate:        {args.tax * 100:>10.1f}%")
+    print(f"    After-tax:       {r['after_tax_cost_of_debt'] * 100:>10.2f}%")
+    print(f"{'─' * 50}")
+    print(f"  WACC:              {r['wacc'] * 100:>10.2f}%")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

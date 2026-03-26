@@ -5,12 +5,12 @@ Usage:
     python credit_spread.py --spread 0.03 --recovery 0.40 --maturity 5
     python credit_spread.py --zscore --wc-ta 0.1 --re-ta 0.2 --ebit-ta 0.15 --eq-debt 0.8 --sales-ta 1.5
 """
+
 import argparse
 import math
 
 
-def altman_zscore(wc_ta: float, re_ta: float, ebit_ta: float,
-                  equity_debt: float, sales_ta: float) -> dict:
+def altman_zscore(wc_ta: float, re_ta: float, ebit_ta: float, equity_debt: float, sales_ta: float) -> dict:
     """Calculate Altman Z-Score for public manufacturing firms.
 
     Args:
@@ -49,8 +49,7 @@ def altman_zscore(wc_ta: float, re_ta: float, ebit_ta: float,
     }
 
 
-def credit_from_spread(cds_spread: float, recovery_rate: float = 0.40,
-                       maturity: float = 5.0) -> dict:
+def credit_from_spread(cds_spread: float, recovery_rate: float = 0.40, maturity: float = 5.0) -> dict:
     """Derive default probabilities from CDS/credit spread.
 
     Args:
@@ -116,44 +115,44 @@ def main():
     args = parser.parse_args()
 
     if args.zscore:
-        for field in ['wc_ta', 're_ta', 'ebit_ta', 'eq_debt', 'sales_ta']:
+        for field in ["wc_ta", "re_ta", "ebit_ta", "eq_debt", "sales_ta"]:
             if getattr(args, field) is None:
                 parser.error(f"Z-Score requires --{field.replace('_', '-')}")
         r = altman_zscore(args.wc_ta, args.re_ta, args.ebit_ta, args.eq_debt, args.sales_ta)
 
-        print(f"\n{'='*50}")
+        print(f"\n{'=' * 50}")
         print("  Altman Z-Score Analysis")
-        print(f"{'='*50}")
+        print(f"{'=' * 50}")
         print("  Components:")
-        for name, val in r['components'].items():
+        for name, val in r["components"].items():
             print(f"    {name:<20} {val:>8.4f}")
-        print(f"{'─'*50}")
+        print(f"{'─' * 50}")
         print(f"  Z-Score:           {r['z_score']:>10.4f}")
         print(f"  Zone:              {r['zone']:>10}")
         print(f"  Assessment:        {r['description']}")
         print("  Thresholds:        >2.99 Safe | 1.81-2.99 Grey | <1.81 Distress")
-        print(f"{'='*50}\n")
+        print(f"{'=' * 50}\n")
 
     elif args.spread is not None:
         r = credit_from_spread(args.spread, args.recovery, args.maturity)
 
-        print(f"\n{'='*50}")
+        print(f"\n{'=' * 50}")
         print("  Credit Spread Analysis")
-        print(f"{'='*50}")
+        print(f"{'=' * 50}")
         print(f"  CDS Spread:        {r['cds_spread_bps']:>10.0f} bps")
-        print(f"  Recovery Rate:     {r['recovery_rate']*100:>10.1f}%")
-        print(f"  LGD:               {r['lgd']*100:>10.1f}%")
-        print(f"{'─'*50}")
-        print(f"  Hazard Rate:       {r['hazard_rate']*100:>10.2f}%")
-        print(f"  Annual PD:         {r['annual_default_prob']*100:>10.2f}%")
-        print(f"{'─'*50}")
+        print(f"  Recovery Rate:     {r['recovery_rate'] * 100:>10.1f}%")
+        print(f"  LGD:               {r['lgd'] * 100:>10.1f}%")
+        print(f"{'─' * 50}")
+        print(f"  Hazard Rate:       {r['hazard_rate'] * 100:>10.2f}%")
+        print(f"  Annual PD:         {r['annual_default_prob'] * 100:>10.2f}%")
+        print(f"{'─' * 50}")
         print("  Cumulative Default Probabilities:")
-        for yr, pd in r['cumulative_default_probs'].items():
-            print(f"    Year {yr}:          {pd*100:>10.2f}%")
-        print(f"{'─'*50}")
-        print(f"  Survival at {int(r['maturity'])}Y:  {r['survival_probability']*100:>10.2f}%")
-        print(f"  Expected Loss:     {r['expected_loss_pct']*100:>10.2f}%")
-        print(f"{'='*50}\n")
+        for yr, pd in r["cumulative_default_probs"].items():
+            print(f"    Year {yr}:          {pd * 100:>10.2f}%")
+        print(f"{'─' * 50}")
+        print(f"  Survival at {int(r['maturity'])}Y:  {r['survival_probability'] * 100:>10.2f}%")
+        print(f"  Expected Loss:     {r['expected_loss_pct'] * 100:>10.2f}%")
+        print(f"{'=' * 50}\n")
 
     else:
         parser.error("Provide --zscore (with ratios) or --spread")

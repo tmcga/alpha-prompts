@@ -6,12 +6,12 @@ Usage:
     python kelly.py --win-prob 0.60 --win-loss-ratio 2.0 --fraction 0.5
     python kelly.py --outcomes "0.40:2.0,0.35:0.5,0.25:-1.0"
 """
+
 import argparse
 import math
 
 
-def kelly_criterion(win_prob: float, win_loss_ratio: float,
-                    fraction: float = 1.0) -> dict:
+def kelly_criterion(win_prob: float, win_loss_ratio: float, fraction: float = 1.0) -> dict:
     """Calculate Kelly fraction for binary outcome bets.
 
     Args:
@@ -118,10 +118,8 @@ def main():
     parser = argparse.ArgumentParser(description="Kelly Criterion Position Sizer")
     parser.add_argument("--win-prob", type=float, help="Win probability (0-1)")
     parser.add_argument("--win-loss-ratio", type=float, help="Avg win / avg loss")
-    parser.add_argument("--fraction", type=float, default=1.0,
-                        help="Kelly fraction: 0.25, 0.5, 1.0 (default: 1.0)")
-    parser.add_argument("--outcomes", type=str, default=None,
-                        help="Multi-outcome: 'prob1:payoff1,prob2:payoff2,...'")
+    parser.add_argument("--fraction", type=float, default=1.0, help="Kelly fraction: 0.25, 0.5, 1.0 (default: 1.0)")
+    parser.add_argument("--outcomes", type=str, default=None, help="Multi-outcome: 'prob1:payoff1,prob2:payoff2,...'")
     args = parser.parse_args()
 
     if args.outcomes:
@@ -131,40 +129,41 @@ def main():
             outcomes.append((float(prob), float(payoff)))
         r = multi_outcome_kelly(outcomes)
 
-        print(f"\n{'='*50}")
+        print(f"\n{'=' * 50}")
         print("  Kelly Criterion: Multi-Outcome")
-        print(f"{'='*50}")
+        print(f"{'=' * 50}")
         print("  Outcomes:")
         for i, (prob, payoff) in enumerate(outcomes, 1):
             print(f"    {i}. P={prob:.2f}  Payoff={payoff:+.2f}")
-        print(f"{'─'*50}")
+        print(f"{'─' * 50}")
         print(f"  Expected Value/Bet: {r['expected_value_per_bet']:>+10.4f}")
-        print(f"  Optimal Fraction:   {r['optimal_fraction']*100:>10.1f}%")
-        print(f"  Geo Growth Rate:    {r['geometric_growth_rate']*100:>10.4f}%")
-        print(f"{'='*50}\n")
+        print(f"  Optimal Fraction:   {r['optimal_fraction'] * 100:>10.1f}%")
+        print(f"  Geo Growth Rate:    {r['geometric_growth_rate'] * 100:>10.4f}%")
+        print(f"{'=' * 50}\n")
     else:
         if args.win_prob is None or args.win_loss_ratio is None:
             parser.error("Provide --win-prob and --win-loss-ratio, or --outcomes")
         r = kelly_criterion(args.win_prob, args.win_loss_ratio, args.fraction)
 
-        print(f"\n{'='*50}")
+        print(f"\n{'=' * 50}")
         print("  Kelly Criterion: Position Sizing")
-        print(f"{'='*50}")
-        print(f"  Win Probability:    {r['win_probability']*100:>10.1f}%")
+        print(f"{'=' * 50}")
+        print(f"  Win Probability:    {r['win_probability'] * 100:>10.1f}%")
         print(f"  Win/Loss Ratio:     {r['win_loss_ratio']:>10.2f}x")
-        print(f"  Edge:               {r['edge']*100:>+10.2f}%")
-        print(f"{'─'*50}")
-        print(f"  Full Kelly:         {r['full_kelly']*100:>10.1f}%")
+        print(f"  Edge:               {r['edge'] * 100:>+10.2f}%")
+        print(f"{'─' * 50}")
+        print(f"  Full Kelly:         {r['full_kelly'] * 100:>10.1f}%")
         frac_label = {0.25: "Quarter", 0.5: "Half", 1.0: "Full"}.get(
-            r['kelly_multiplier'], f"{r['kelly_multiplier']:.0%}")
-        print(f"  {frac_label} Kelly:  {r['applied_fraction']*100:>10.1f}%")
-        print(f"  Exp Return/Bet:     {r['edge']*100:>+10.2f}%")
-        print(f"  Geo Growth Rate:    {r['geometric_growth_rate']*100:>10.4f}%")
-        print(f"{'─'*50}")
+            r["kelly_multiplier"], f"{r['kelly_multiplier']:.0%}"
+        )
+        print(f"  {frac_label} Kelly:  {r['applied_fraction'] * 100:>10.1f}%")
+        print(f"  Exp Return/Bet:     {r['edge'] * 100:>+10.2f}%")
+        print(f"  Geo Growth Rate:    {r['geometric_growth_rate'] * 100:>10.4f}%")
+        print(f"{'─' * 50}")
         print("  Drawdown Risk (at full Kelly):")
-        print(f"    P(50% drawdown):  {r['prob_50pct_drawdown']*100:>10.1f}%")
-        print(f"    P(75% drawdown):  {r['prob_75pct_drawdown']*100:>10.1f}%")
-        print(f"{'='*50}\n")
+        print(f"    P(50% drawdown):  {r['prob_50pct_drawdown'] * 100:>10.1f}%")
+        print(f"    P(75% drawdown):  {r['prob_75pct_drawdown'] * 100:>10.1f}%")
+        print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

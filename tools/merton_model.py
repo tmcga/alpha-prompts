@@ -4,6 +4,7 @@
 Usage:
     python merton_model.py --assets 1000 --debt 600 --vol 0.25 --rate 0.04 --maturity 5
 """
+
 import argparse
 import math
 
@@ -18,8 +19,7 @@ def norm_pdf(x: float) -> float:
     return math.exp(-0.5 * x * x) / math.sqrt(2 * math.pi)
 
 
-def merton_model(asset_value: float, debt_face: float, asset_vol: float,
-                 risk_free: float, maturity: float) -> dict:
+def merton_model(asset_value: float, debt_face: float, asset_vol: float, risk_free: float, maturity: float) -> dict:
     """Calculate Merton structural credit model outputs.
 
     The Merton model treats equity as a European call option on the firm's
@@ -42,7 +42,7 @@ def merton_model(asset_value: float, debt_face: float, asset_vol: float,
     sqrt_t = math.sqrt(maturity)
 
     # Distance to default
-    d1 = (math.log(asset_value / debt_face) + (risk_free + 0.5 * asset_vol ** 2) * maturity) / (asset_vol * sqrt_t)
+    d1 = (math.log(asset_value / debt_face) + (risk_free + 0.5 * asset_vol**2) * maturity) / (asset_vol * sqrt_t)
     d2 = d1 - asset_vol * sqrt_t
 
     # Default probability (risk-neutral)
@@ -58,14 +58,14 @@ def merton_model(asset_value: float, debt_face: float, asset_vol: float,
     debt_value = asset_value - equity_value
 
     # Credit spread
-    risky_yield = -math.log(debt_value / debt_face) / maturity if debt_value > 0 else float('inf')
+    risky_yield = -math.log(debt_value / debt_face) / maturity if debt_value > 0 else float("inf")
     credit_spread = risky_yield - risk_free
 
     # Equity delta (sensitivity of equity to asset value changes)
     equity_delta = norm_cdf(d1)
 
     # Equity volatility (from asset vol via leverage)
-    leverage_ratio = asset_value / equity_value if equity_value > 0 else float('inf')
+    leverage_ratio = asset_value / equity_value if equity_value > 0 else float("inf")
     equity_vol = asset_vol * equity_delta * leverage_ratio
 
     # Debt delta
@@ -106,30 +106,30 @@ def main():
 
     r = merton_model(args.assets, args.debt, args.vol, args.rate, args.maturity)
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("  Merton Credit Model")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Asset Value:       ${args.assets:>10,.1f}")
     print(f"  Debt Face Value:   ${args.debt:>10,.1f}")
-    print(f"  Asset Volatility:  {args.vol*100:>10.1f}%")
-    print(f"  Risk-Free Rate:    {args.rate*100:>10.2f}%")
+    print(f"  Asset Volatility:  {args.vol * 100:>10.1f}%")
+    print(f"  Risk-Free Rate:    {args.rate * 100:>10.2f}%")
     print(f"  Maturity:          {args.maturity:>10.1f} years")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  Distance to Default: {r['distance_to_default']:>8.3f}")
-    print(f"  Default Probability: {r['default_probability']*100:>8.2f}%")
-    print(f"{'─'*50}")
+    print(f"  Default Probability: {r['default_probability'] * 100:>8.2f}%")
+    print(f"{'─' * 50}")
     print(f"  Equity Value:      ${r['equity_value']:>10,.1f}")
     print(f"  Debt Value:        ${r['debt_value']:>10,.1f}")
     print(f"  Leverage (A/E):    {r['leverage_ratio']:>10.2f}x")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  Credit Spread:     {r['credit_spread_bps']:>10.1f} bps")
-    print(f"  Risky Yield:       {r['risky_yield']*100:>10.2f}%")
+    print(f"  Risky Yield:       {r['risky_yield'] * 100:>10.2f}%")
     print(f"  Expected Loss:     ${r['expected_loss']:>10,.1f}")
-    print(f"  LGD (proxy):       {r['lgd_proxy']*100:>10.1f}%")
-    print(f"{'─'*50}")
+    print(f"  LGD (proxy):       {r['lgd_proxy'] * 100:>10.1f}%")
+    print(f"{'─' * 50}")
     print(f"  Equity Delta:      {r['equity_delta']:>10.4f}")
-    print(f"  Equity Volatility: {r['equity_vol']*100:>10.1f}%")
-    print(f"{'='*50}\n")
+    print(f"  Equity Volatility: {r['equity_vol'] * 100:>10.1f}%")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

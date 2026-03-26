@@ -5,15 +5,23 @@ Usage:
     python monte_carlo.py --initial 1000000 --return 0.07 --vol 0.15 --years 30 --sims 10000
     python monte_carlo.py --initial 2000000 --return 0.06 --vol 0.12 --years 30 --withdrawal 0.04 --goal 500000
 """
+
 import argparse
 import math
 import random
 
 
-def monte_carlo_sim(initial: float, expected_return: float, volatility: float,
-                    years: int, num_sims: int = 10000, withdrawal_rate: float = 0.0,
-                    contribution: float = 0.0, goal: float = 0.0,
-                    seed: int | None = None) -> dict:
+def monte_carlo_sim(
+    initial: float,
+    expected_return: float,
+    volatility: float,
+    years: int,
+    num_sims: int = 10000,
+    withdrawal_rate: float = 0.0,
+    contribution: float = 0.0,
+    goal: float = 0.0,
+    seed: int | None = None,
+) -> dict:
     """Run Monte Carlo simulation with geometric Brownian motion paths.
 
     Args:
@@ -34,7 +42,7 @@ def monte_carlo_sim(initial: float, expected_return: float, volatility: float,
         random.seed(seed)
 
     # Drift adjusted for geometric returns: mu - 0.5*sigma^2
-    drift = expected_return - 0.5 * volatility ** 2
+    drift = expected_return - 0.5 * volatility**2
     annual_withdrawal = initial * withdrawal_rate
 
     terminal_values = []
@@ -124,21 +132,30 @@ def main():
     parser.add_argument("--seed", type=int, default=None, help="Random seed")
     args = parser.parse_args()
 
-    r = monte_carlo_sim(args.initial, args.exp_return, args.vol, args.years,
-                        args.sims, args.withdrawal, args.contribution, args.goal, args.seed)
+    r = monte_carlo_sim(
+        args.initial,
+        args.exp_return,
+        args.vol,
+        args.years,
+        args.sims,
+        args.withdrawal,
+        args.contribution,
+        args.goal,
+        args.seed,
+    )
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  Monte Carlo Simulation ({r['num_simulations']:,} paths)")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Initial Value:     ${r['initial_value']:>12,.0f}")
-    print(f"  Expected Return:   {args.exp_return*100:>12.1f}%")
-    print(f"  Volatility:        {args.vol*100:>12.1f}%")
+    print(f"  Expected Return:   {args.exp_return * 100:>12.1f}%")
+    print(f"  Volatility:        {args.vol * 100:>12.1f}%")
     print(f"  Horizon:           {r['years']:>12d} years")
     if args.withdrawal > 0:
-        print(f"  Withdrawal Rate:   {args.withdrawal*100:>12.1f}%")
+        print(f"  Withdrawal Rate:   {args.withdrawal * 100:>12.1f}%")
     if args.contribution > 0:
         print(f"  Annual Contrib:    ${args.contribution:>12,.0f}")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print("  Terminal Value Distribution:")
     print(f"    1st Percentile:  ${r['percentile_1']:>12,.0f}")
     print(f"    5th Percentile:  ${r['percentile_5']:>12,.0f}")
@@ -149,16 +166,16 @@ def main():
     print(f"   90th Percentile:  ${r['percentile_90']:>12,.0f}")
     print(f"   95th Percentile:  ${r['percentile_95']:>12,.0f}")
     print(f"   99th Percentile:  ${r['percentile_99']:>12,.0f}")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  Mean Terminal:     ${r['mean_terminal']:>12,.0f}")
     print(f"  Best Case:         ${r['best_case']:>12,.0f}")
     print(f"  Worst Case:        ${r['worst_case']:>12,.0f}")
-    print(f"{'─'*50}")
-    if r['success_probability'] is not None:
+    print(f"{'─' * 50}")
+    if r["success_probability"] is not None:
         print(f"  Goal (${args.goal:,.0f}):")
-        print(f"    Success Prob:    {r['success_probability']*100:>12.1f}%")
-    print(f"  Ruin Probability:  {r['ruin_probability']*100:>12.1f}%")
-    print(f"{'='*50}\n")
+        print(f"    Success Prob:    {r['success_probability'] * 100:>12.1f}%")
+    print(f"  Ruin Probability:  {r['ruin_probability'] * 100:>12.1f}%")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

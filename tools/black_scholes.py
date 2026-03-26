@@ -5,6 +5,7 @@ Usage:
     python black_scholes.py --spot 100 --strike 105 --time 0.5 --rate 0.05 --vol 0.2 --type call
     python black_scholes.py --spot 100 --strike 105 --time 0.5 --rate 0.05 --vol 0.2 --div 0.02 --type call
 """
+
 import argparse
 import math
 
@@ -19,9 +20,9 @@ def norm_pdf(x: float) -> float:
     return math.exp(-0.5 * x * x) / math.sqrt(2 * math.pi)
 
 
-def black_scholes(spot: float, strike: float, time: float, rate: float,
-                  vol: float, option_type: str = "call",
-                  div_yield: float = 0.0) -> dict:
+def black_scholes(
+    spot: float, strike: float, time: float, rate: float, vol: float, option_type: str = "call", div_yield: float = 0.0
+) -> dict:
     """Calculate Black-Scholes price and Greeks.
 
     Args:
@@ -42,14 +43,13 @@ def black_scholes(spot: float, strike: float, time: float, rate: float,
             intrinsic = max(spot - strike, 0)
         else:
             intrinsic = max(strike - spot, 0)
-        return {"price": intrinsic, "delta": 0, "gamma": 0, "vega": 0,
-                "theta": 0, "rho": 0, "vanna": 0, "charm": 0}
+        return {"price": intrinsic, "delta": 0, "gamma": 0, "vega": 0, "theta": 0, "rho": 0, "vanna": 0, "charm": 0}
 
     # Adjusted spot for continuous dividends
     s_adj = spot * math.exp(-div_yield * time)
     sqrt_t = math.sqrt(time)
 
-    d1 = (math.log(s_adj / strike) + (rate + 0.5 * vol ** 2) * time) / (vol * sqrt_t)
+    d1 = (math.log(s_adj / strike) + (rate + 0.5 * vol**2) * time) / (vol * sqrt_t)
     d2 = d1 - vol * sqrt_t
 
     df = math.exp(-rate * time)
@@ -66,16 +66,20 @@ def black_scholes(spot: float, strike: float, time: float, rate: float,
 
     gamma = qf * norm_pdf(d1) / (spot * vol * sqrt_t)
     vega = spot * qf * norm_pdf(d1) * sqrt_t / 100
-    theta = (-(spot * qf * norm_pdf(d1) * vol) / (2 * sqrt_t)
-             + div_yield * spot * qf * norm_cdf(d1 if option_type == "call" else -d1)
-             * (1 if option_type == "call" else -1)
-             - rate * strike * df * norm_cdf(d2 if option_type == "call" else -d2)
-             * (1 if option_type == "call" else -1)) / 365
+    theta = (
+        -(spot * qf * norm_pdf(d1) * vol) / (2 * sqrt_t)
+        + div_yield * spot * qf * norm_cdf(d1 if option_type == "call" else -d1) * (1 if option_type == "call" else -1)
+        - rate * strike * df * norm_cdf(d2 if option_type == "call" else -d2) * (1 if option_type == "call" else -1)
+    ) / 365
 
     # Higher-order Greeks
     vanna = -qf * norm_pdf(d1) * d2 / vol  # dDelta/dVol
-    charm = -qf * norm_pdf(d1) * (d2 * (2 * (rate - div_yield) * time - d2 * vol * sqrt_t)
-            / (2 * time * vol * sqrt_t)) / 365  # dDelta/dTime per day
+    charm = (
+        -qf
+        * norm_pdf(d1)
+        * (d2 * (2 * (rate - div_yield) * time - d2 * vol * sqrt_t) / (2 * time * vol * sqrt_t))
+        / 365
+    )  # dDelta/dTime per day
 
     # Put-call parity check
     call_price = s_adj * norm_cdf(d1) - strike * df * norm_cdf(d2)
@@ -109,16 +113,15 @@ def main():
     parser.add_argument("--div", type=float, default=0.0, help="Continuous dividend yield (default: 0)")
     args = parser.parse_args()
 
-    r = black_scholes(args.spot, args.strike, args.time, args.rate, args.vol,
-                      args.option_type, args.div)
+    r = black_scholes(args.spot, args.strike, args.time, args.rate, args.vol, args.option_type, args.div)
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  Black-Scholes: {args.option_type.upper()}")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Spot:    ${args.spot:>8.2f}    Strike: ${args.strike:>8.2f}")
-    print(f"  Time:    {args.time:>8.4f}y   Vol:    {args.vol*100:>8.1f}%")
-    print(f"  Rate:    {args.rate*100:>8.2f}%")
-    print(f"{'─'*50}")
+    print(f"  Time:    {args.time:>8.4f}y   Vol:    {args.vol * 100:>8.1f}%")
+    print(f"  Rate:    {args.rate * 100:>8.2f}%")
+    print(f"{'─' * 50}")
     print(f"  Price:   ${r['price']:>8.4f}")
     print(f"  Delta:   {r['delta']:>+9.4f}")
     print(f"  Gamma:   {r['gamma']:>9.4f}")
@@ -127,11 +130,11 @@ def main():
     print(f"  Rho:     {r['rho']:>9.4f}   (per 1% rate)")
     print(f"  Vanna:   {r['vanna']:>9.4f}   (dDelta/dVol)")
     print(f"  Charm:   {r['charm']:>9.4f}   (dDelta/dT per day)")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  d1:      {r['d1']:>9.4f}")
     print(f"  d2:      {r['d2']:>9.4f}")
     print(f"  Put-Call Parity: {'OK' if r['put_call_parity_check'] else 'FAIL'}")
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

@@ -5,13 +5,13 @@ Usage:
     python portfolio_risk.py --returns 0.02,-0.01,0.03,0.01,-0.02,0.04,0.01,-0.03,0.02,0.01 --rf 0.04
     python portfolio_risk.py --file returns.csv --rf 0.04
 """
+
 import argparse
 import math
 import csv
 
 
-def portfolio_metrics(returns: list[float], risk_free: float = 0.0,
-                      periods_per_year: int = 12) -> dict:
+def portfolio_metrics(returns: list[float], risk_free: float = 0.0, periods_per_year: int = 12) -> dict:
     """Calculate portfolio risk and return metrics.
 
     Args:
@@ -42,7 +42,7 @@ def portfolio_metrics(returns: list[float], risk_free: float = 0.0,
 
     # Sortino ratio (downside deviation)
     downside_returns = [min(r - rf_periodic, 0) for r in returns]
-    downside_var = sum(r ** 2 for r in downside_returns) / (n - 1)
+    downside_var = sum(r**2 for r in downside_returns) / (n - 1)
     downside_dev = math.sqrt(downside_var) * math.sqrt(periods_per_year)
     sortino = (ann_return - risk_free) / downside_dev if downside_dev > 0 else 0
 
@@ -52,7 +52,7 @@ def portfolio_metrics(returns: list[float], risk_free: float = 0.0,
     max_dd = 0.0
     drawdowns = []
     for r in returns:
-        cumulative *= (1 + r)
+        cumulative *= 1 + r
         peak = max(peak, cumulative)
         dd = (cumulative - peak) / peak
         drawdowns.append(dd)
@@ -67,7 +67,7 @@ def portfolio_metrics(returns: list[float], risk_free: float = 0.0,
     var_95 = -sorted_returns[var_index]
 
     # CVaR / Expected Shortfall (95%)
-    tail_returns = sorted_returns[:int(n * 0.05) + 1]
+    tail_returns = sorted_returns[: int(n * 0.05) + 1]
     cvar_95 = -sum(tail_returns) / len(tail_returns) if tail_returns else 0
 
     # Win rate
@@ -99,8 +99,7 @@ def portfolio_metrics(returns: list[float], risk_free: float = 0.0,
     return result
 
 
-def benchmark_relative(returns: list[float], benchmark: list[float],
-                       periods_per_year: int = 12) -> dict:
+def benchmark_relative(returns: list[float], benchmark: list[float], periods_per_year: int = 12) -> dict:
     """Calculate benchmark-relative metrics.
 
     Args:
@@ -134,8 +133,7 @@ def main():
     parser.add_argument("--file", help="CSV file with returns (one per line)")
     parser.add_argument("--benchmark", help="Comma-separated benchmark returns")
     parser.add_argument("--rf", type=float, default=0.0, help="Annual risk-free rate (default: 0)")
-    parser.add_argument("--freq", type=int, default=12,
-                        help="Periods per year: 12=monthly, 252=daily (default: 12)")
+    parser.add_argument("--freq", type=int, default=12, help="Periods per year: 12=monthly, 252=daily (default: 12)")
     args = parser.parse_args()
 
     if args.returns:
@@ -155,35 +153,35 @@ def main():
 
     r = portfolio_metrics(returns, args.rf, args.freq)
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  Portfolio Risk Analysis ({r['num_periods']} periods)")
-    print(f"{'='*50}")
-    print(f"  Annualized Return:   {r['ann_return']*100:>+8.2f}%")
-    print(f"  Annualized Vol:      {r['ann_volatility']*100:>8.2f}%")
-    print(f"  Cumulative Return:   {r['cumulative_return']*100:>+8.2f}%")
-    print(f"{'─'*50}")
+    print(f"{'=' * 50}")
+    print(f"  Annualized Return:   {r['ann_return'] * 100:>+8.2f}%")
+    print(f"  Annualized Vol:      {r['ann_volatility'] * 100:>8.2f}%")
+    print(f"  Cumulative Return:   {r['cumulative_return'] * 100:>+8.2f}%")
+    print(f"{'─' * 50}")
     print(f"  Sharpe Ratio:        {r['sharpe']:>8.2f}")
     print(f"  Sortino Ratio:       {r['sortino']:>8.2f}")
     print(f"  Calmar Ratio:        {r['calmar']:>8.2f}")
-    print(f"{'─'*50}")
-    print(f"  Max Drawdown:        {r['max_drawdown']*100:>8.2f}%")
-    print(f"  VaR (95% hist):      {r['var_95']*100:>8.2f}%")
-    print(f"  VaR (95% param):     {r['var_95_parametric']*100:>8.2f}%")
-    print(f"  CVaR (95%):          {r['cvar_95']*100:>8.2f}%")
-    print(f"{'─'*50}")
-    print(f"  Win Rate:            {r['win_rate']*100:>8.1f}%")
-    print(f"  Best Period:         {r['best_period']*100:>+8.2f}%")
-    print(f"  Worst Period:        {r['worst_period']*100:>+8.2f}%")
+    print(f"{'─' * 50}")
+    print(f"  Max Drawdown:        {r['max_drawdown'] * 100:>8.2f}%")
+    print(f"  VaR (95% hist):      {r['var_95'] * 100:>8.2f}%")
+    print(f"  VaR (95% param):     {r['var_95_parametric'] * 100:>8.2f}%")
+    print(f"  CVaR (95%):          {r['cvar_95'] * 100:>8.2f}%")
+    print(f"{'─' * 50}")
+    print(f"  Win Rate:            {r['win_rate'] * 100:>8.1f}%")
+    print(f"  Best Period:         {r['best_period'] * 100:>+8.2f}%")
+    print(f"  Worst Period:        {r['worst_period'] * 100:>+8.2f}%")
 
     if args.benchmark:
         bench = [float(x.strip()) for x in args.benchmark.split(",")]
         br = benchmark_relative(returns, bench, args.freq)
-        print(f"{'─'*50}")
-        print(f"  Active Return:       {br['active_return']*100:>+8.2f}%")
-        print(f"  Tracking Error:      {br['tracking_error']*100:>8.2f}%")
+        print(f"{'─' * 50}")
+        print(f"  Active Return:       {br['active_return'] * 100:>+8.2f}%")
+        print(f"  Tracking Error:      {br['tracking_error'] * 100:>8.2f}%")
         print(f"  Information Ratio:   {br['information_ratio']:>8.2f}")
 
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

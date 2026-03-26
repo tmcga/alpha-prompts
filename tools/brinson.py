@@ -9,12 +9,17 @@ Usage:
         --bench-returns 0.10,0.09,0.06,0.12,0.04 \
         --sectors Tech,Health,Finance,Energy,Utils
 """
+
 import argparse
 
 
-def brinson_attribution(port_weights: list[float], port_returns: list[float],
-                        bench_weights: list[float], bench_returns: list[float],
-                        sector_names: list[str] | None = None) -> dict:
+def brinson_attribution(
+    port_weights: list[float],
+    port_returns: list[float],
+    bench_weights: list[float],
+    bench_returns: list[float],
+    sector_names: list[str] | None = None,
+) -> dict:
     """Brinson-Fachler performance attribution.
 
     Decomposes active return into allocation, selection, and interaction effects
@@ -35,7 +40,7 @@ def brinson_attribution(port_weights: list[float], port_returns: list[float],
         raise ValueError("All input lists must have the same length")
 
     if sector_names is None:
-        sector_names = [f"Sector {i+1}" for i in range(n)]
+        sector_names = [f"Sector {i + 1}" for i in range(n)]
 
     # Total returns
     port_total = sum(w * r for w, r in zip(port_weights, port_returns))
@@ -65,18 +70,20 @@ def brinson_attribution(port_weights: list[float], port_returns: list[float],
         total_select += selection
         total_interact += interaction
 
-        sectors.append({
-            "name": sector_names[i],
-            "port_weight": pw,
-            "bench_weight": bw,
-            "active_weight": pw - bw,
-            "port_return": pr,
-            "bench_return": br,
-            "allocation": allocation,
-            "selection": selection,
-            "interaction": interaction,
-            "total_effect": allocation + selection + interaction,
-        })
+        sectors.append(
+            {
+                "name": sector_names[i],
+                "port_weight": pw,
+                "bench_weight": bw,
+                "active_weight": pw - bw,
+                "port_return": pr,
+                "bench_return": br,
+                "allocation": allocation,
+                "selection": selection,
+                "interaction": interaction,
+                "total_effect": allocation + selection + interaction,
+            }
+        )
 
     return {
         "portfolio_return": port_total,
@@ -106,30 +113,36 @@ def main():
 
     r = brinson_attribution(pw, pr, bw, br, names)
 
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("  Brinson-Fachler Performance Attribution")
-    print(f"{'='*70}")
-    print(f"  Portfolio Return:   {r['portfolio_return']*100:>+8.2f}%")
-    print(f"  Benchmark Return:   {r['benchmark_return']*100:>+8.2f}%")
-    print(f"  Active Return:      {r['active_return']*100:>+8.2f}%")
-    print(f"{'─'*70}")
+    print(f"{'=' * 70}")
+    print(f"  Portfolio Return:   {r['portfolio_return'] * 100:>+8.2f}%")
+    print(f"  Benchmark Return:   {r['benchmark_return'] * 100:>+8.2f}%")
+    print(f"  Active Return:      {r['active_return'] * 100:>+8.2f}%")
+    print(f"{'─' * 70}")
 
     # Header
-    print(f"  {'Sector':<12} {'Wt(P)':>6} {'Wt(B)':>6} {'Ret(P)':>7} {'Ret(B)':>7}"
-          f" {'Alloc':>7} {'Select':>7} {'Inter':>7} {'Total':>7}")
-    print(f"  {'─'*12} {'─'*6} {'─'*6} {'─'*7} {'─'*7} {'─'*7} {'─'*7} {'─'*7} {'─'*7}")
+    print(
+        f"  {'Sector':<12} {'Wt(P)':>6} {'Wt(B)':>6} {'Ret(P)':>7} {'Ret(B)':>7}"
+        f" {'Alloc':>7} {'Select':>7} {'Inter':>7} {'Total':>7}"
+    )
+    print(f"  {'─' * 12} {'─' * 6} {'─' * 6} {'─' * 7} {'─' * 7} {'─' * 7} {'─' * 7} {'─' * 7} {'─' * 7}")
 
-    for s in r['sectors']:
-        print(f"  {s['name']:<12} {s['port_weight']*100:>5.1f}% {s['bench_weight']*100:>5.1f}%"
-              f" {s['port_return']*100:>+6.1f}% {s['bench_return']*100:>+6.1f}%"
-              f" {s['allocation']*100:>+6.2f}% {s['selection']*100:>+6.2f}%"
-              f" {s['interaction']*100:>+6.2f}% {s['total_effect']*100:>+6.2f}%")
+    for s in r["sectors"]:
+        print(
+            f"  {s['name']:<12} {s['port_weight'] * 100:>5.1f}% {s['bench_weight'] * 100:>5.1f}%"
+            f" {s['port_return'] * 100:>+6.1f}% {s['bench_return'] * 100:>+6.1f}%"
+            f" {s['allocation'] * 100:>+6.2f}% {s['selection'] * 100:>+6.2f}%"
+            f" {s['interaction'] * 100:>+6.2f}% {s['total_effect'] * 100:>+6.2f}%"
+        )
 
-    print(f"  {'─'*12} {'─'*6} {'─'*6} {'─'*7} {'─'*7} {'─'*7} {'─'*7} {'─'*7} {'─'*7}")
-    print(f"  {'TOTAL':<12} {'':>6} {'':>6} {'':>7} {'':>7}"
-          f" {r['total_allocation']*100:>+6.2f}% {r['total_selection']*100:>+6.2f}%"
-          f" {r['total_interaction']*100:>+6.2f}% {r['active_return']*100:>+6.2f}%")
-    print(f"{'='*70}\n")
+    print(f"  {'─' * 12} {'─' * 6} {'─' * 6} {'─' * 7} {'─' * 7} {'─' * 7} {'─' * 7} {'─' * 7} {'─' * 7}")
+    print(
+        f"  {'TOTAL':<12} {'':>6} {'':>6} {'':>7} {'':>7}"
+        f" {r['total_allocation'] * 100:>+6.2f}% {r['total_selection'] * 100:>+6.2f}%"
+        f" {r['total_interaction'] * 100:>+6.2f}% {r['active_return'] * 100:>+6.2f}%"
+    )
+    print(f"{'=' * 70}\n")
 
 
 if __name__ == "__main__":

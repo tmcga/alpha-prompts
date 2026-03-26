@@ -4,13 +4,19 @@
 Usage:
     python market_maker.py --mid 100 --inventory 50 --gamma 0.01 --vol 0.02 --time 0.5 --intensity 1.5
 """
+
 import argparse
 import math
 
 
-def optimal_quotes(mid_price: float, inventory: int, risk_aversion: float,
-                   volatility: float, time_remaining: float,
-                   order_intensity: float) -> dict:
+def optimal_quotes(
+    mid_price: float,
+    inventory: int,
+    risk_aversion: float,
+    volatility: float,
+    time_remaining: float,
+    order_intensity: float,
+) -> dict:
     """Calculate Avellaneda-Stoikov optimal market making quotes.
 
     The model computes an inventory-adjusted reservation price and optimal
@@ -35,11 +41,11 @@ def optimal_quotes(mid_price: float, inventory: int, risk_aversion: float,
 
     # Reservation price: r(s, q, t) = s - q * gamma * sigma^2 * (T - t)
     # Inventory penalty pushes price away from fair value based on position
-    inventory_penalty = q * gamma * sigma ** 2 * T
+    inventory_penalty = q * gamma * sigma**2 * T
     reservation_price = mid_price - inventory_penalty
 
     # Optimal spread: delta = gamma * sigma^2 * T + (2/gamma) * ln(1 + gamma/k)
-    spread_component_risk = gamma * sigma ** 2 * T
+    spread_component_risk = gamma * sigma**2 * T
     spread_component_intensity = (2 / gamma) * math.log(1 + gamma / k)
     optimal_spread = spread_component_risk + spread_component_intensity
 
@@ -52,7 +58,7 @@ def optimal_quotes(mid_price: float, inventory: int, risk_aversion: float,
     ask_distance = ask_price - mid_price
 
     # Inventory risk: q^2 * gamma * sigma^2 * T
-    inventory_risk = q ** 2 * gamma * sigma ** 2 * T
+    inventory_risk = q**2 * gamma * sigma**2 * T
 
     # Expected P&L per unit time (from spread capture)
     # Approximate: spread * order_intensity * exp(-k * spread/2) per side
@@ -90,29 +96,29 @@ def main():
 
     r = optimal_quotes(args.mid, args.inventory, args.gamma, args.vol, args.time, args.intensity)
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("  Avellaneda-Stoikov Market Maker")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Mid Price:         ${r['mid_price']:>10.4f}")
     print(f"  Inventory:         {r['inventory']:>+10d}")
     print(f"  Risk Aversion:     {args.gamma:>10.4f}")
     print(f"  Volatility:        {args.vol:>10.4f}")
     print(f"  Time Remaining:    {args.time:>10.4f}")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  Reservation Price: ${r['reservation_price']:>10.4f}")
     print(f"  Inventory Adj:     ${r['inventory_adjustment']:>+10.4f}")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  Optimal Spread:    ${r['optimal_spread']:>10.4f}  ({r['optimal_spread_bps']:.1f} bps)")
     print(f"    Risk Component:  ${r['spread_risk_component']:>10.4f}")
     print(f"    Intensity Comp:  ${r['spread_intensity_component']:>10.4f}")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  Bid Price:         ${r['bid_price']:>10.4f}  (-{r['bid_distance']:.4f} from mid)")
     print(f"  Ask Price:         ${r['ask_price']:>10.4f}  (+{r['ask_distance']:.4f} from mid)")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  Inventory Risk:    ${r['inventory_risk']:>10.4f}")
     print(f"  Exp Fill Rate:     {r['expected_fill_rate']:>10.4f}/unit time")
     print(f"  Exp P&L/Fill:      ${r['expected_pnl_per_fill']:>10.4f}")
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

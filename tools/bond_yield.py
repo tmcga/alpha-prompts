@@ -4,11 +4,13 @@
 Usage:
     python bond_yield.py --face 1000 --coupon 0.05 --price 980 --years 10 --freq 2
 """
+
 import argparse
 
 
-def bond_ytm(face: float, coupon_rate: float, price: float, years: float,
-             freq: int = 2, tol: float = 1e-8, max_iter: int = 200) -> float:
+def bond_ytm(
+    face: float, coupon_rate: float, price: float, years: float, freq: int = 2, tol: float = 1e-8, max_iter: int = 200
+) -> float:
     """Calculate yield to maturity using Newton's method.
 
     Args:
@@ -33,8 +35,9 @@ def bond_ytm(face: float, coupon_rate: float, price: float, years: float,
             discount = (1 + r) ** (-n)
             annuity = (1 - discount) / r
             pv = coupon * annuity + face * discount
-            dpv = (-coupon * (annuity / (1 + r) * n - (1 - discount) / r ** 2 * (1 / freq))
-                   + face * (-n / freq) * (1 + r) ** (-n - 1))
+            dpv = -coupon * (annuity / (1 + r) * n - (1 - discount) / r**2 * (1 / freq)) + face * (-n / freq) * (
+                1 + r
+            ) ** (-n - 1)
 
         diff = pv - price
         if abs(diff) < tol:
@@ -47,9 +50,9 @@ def bond_ytm(face: float, coupon_rate: float, price: float, years: float,
     return ytm
 
 
-def bond_analytics(face: float, coupon_rate: float, price: float,
-                   years: float, freq: int = 2,
-                   benchmark_yield: float = None) -> dict:
+def bond_analytics(
+    face: float, coupon_rate: float, price: float, years: float, freq: int = 2, benchmark_yield: float = None
+) -> dict:
     """Calculate full bond analytics.
 
     Returns:
@@ -82,7 +85,7 @@ def bond_analytics(face: float, coupon_rate: float, price: float,
         convexity += t * (t + 1) * pv_cf
 
     mac_duration /= pv_total if pv_total else 1
-    convexity /= (pv_total * (1 + r) ** 2 * freq ** 2) if pv_total else 1
+    convexity /= (pv_total * (1 + r) ** 2 * freq**2) if pv_total else 1
 
     # Modified duration
     mod_duration = mac_duration / (1 + r)
@@ -134,28 +137,27 @@ def main():
     parser.add_argument("--benchmark-yield", type=float, default=None, help="Benchmark yield for spread calc")
     args = parser.parse_args()
 
-    r = bond_analytics(args.face, args.coupon, args.price, args.years, args.freq,
-                       args.benchmark_yield)
+    r = bond_analytics(args.face, args.coupon, args.price, args.years, args.freq, args.benchmark_yield)
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("  Bond Analytics")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Face Value:      ${args.face:>10,.2f}")
-    print(f"  Coupon Rate:     {args.coupon*100:>10.3f}%")
+    print(f"  Coupon Rate:     {args.coupon * 100:>10.3f}%")
     print(f"  Market Price:    ${args.price:>10,.2f}")
     print(f"  Maturity:        {args.years:>10.1f} years ({r['periods']} periods)")
-    print(f"{'─'*50}")
-    print(f"  Current Yield:   {r['current_yield']*100:>10.3f}%")
-    print(f"  YTM:             {r['ytm']*100:>10.3f}%")
+    print(f"{'─' * 50}")
+    print(f"  Current Yield:   {r['current_yield'] * 100:>10.3f}%")
+    print(f"  YTM:             {r['ytm'] * 100:>10.3f}%")
     print(f"  Macaulay Dur:    {r['macaulay_duration']:>10.3f} years")
     print(f"  Modified Dur:    {r['modified_duration']:>10.3f}")
     print(f"  Convexity:       {r['convexity']:>10.3f}")
     print(f"  DV01:            ${r['dv01']:>10.4f}")
-    if r['g_spread'] is not None:
-        print(f"{'─'*50}")
-        print(f"  G-Spread:        {r['g_spread']*10000:>10.1f} bps")
-        print(f"  Z-Spread:        {r['z_spread']*10000:>10.1f} bps")
-    print(f"{'='*50}\n")
+    if r["g_spread"] is not None:
+        print(f"{'─' * 50}")
+        print(f"  G-Spread:        {r['g_spread'] * 10000:>10.1f} bps")
+        print(f"  Z-Spread:        {r['z_spread'] * 10000:>10.1f} bps")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

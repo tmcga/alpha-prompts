@@ -4,14 +4,24 @@
 Usage:
     python lbo.py --ebitda 100 --entry-multiple 10 --exit-multiple 10 --leverage 5 --rate 0.06 --growth 0.05 --years 5
 """
+
 import argparse
 
 
-def lbo_returns(ebitda: float, entry_multiple: float, exit_multiple: float,
-                leverage: float, interest_rate: float, ebitda_growth: float,
-                years: int, amortization_pct: float = 0.01,
-                tax_rate: float = None, capex_pct: float = None,
-                nwc_pct: float = None, da_pct: float = None) -> dict:
+def lbo_returns(
+    ebitda: float,
+    entry_multiple: float,
+    exit_multiple: float,
+    leverage: float,
+    interest_rate: float,
+    ebitda_growth: float,
+    years: int,
+    amortization_pct: float = 0.01,
+    tax_rate: float = None,
+    capex_pct: float = None,
+    nwc_pct: float = None,
+    da_pct: float = None,
+) -> dict:
     """Calculate LBO returns with MOIC, IRR, and attribution.
 
     Args:
@@ -115,36 +125,47 @@ def main():
     parser.add_argument("--da-pct", type=float, default=None, help="D&A %% of EBITDA (default: 10%%)")
     args = parser.parse_args()
 
-    r = lbo_returns(args.ebitda, args.entry_multiple, args.exit_multiple,
-                    args.leverage, args.rate, args.growth, args.years,
-                    tax_rate=args.tax_rate, capex_pct=args.capex_pct,
-                    nwc_pct=args.nwc_pct, da_pct=args.da_pct)
+    r = lbo_returns(
+        args.ebitda,
+        args.entry_multiple,
+        args.exit_multiple,
+        args.leverage,
+        args.rate,
+        args.growth,
+        args.years,
+        tax_rate=args.tax_rate,
+        capex_pct=args.capex_pct,
+        nwc_pct=args.nwc_pct,
+        da_pct=args.da_pct,
+    )
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("  LBO Returns Analysis")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Entry EV:        ${r['entry_ev']:>10,.1f}  ({args.entry_multiple:.1f}x EBITDA)")
     print(f"  Entry Debt:      ${r['entry_debt']:>10,.1f}  ({args.leverage:.1f}x EBITDA)")
     print(f"  Entry Equity:    ${r['entry_equity']:>10,.1f}")
-    print(f"{'─'*50}")
-    print(f"  Exit EBITDA:     ${r['exit_ebitda']:>10,.1f}  ({args.growth*100:.1f}% CAGR)")
+    print(f"{'─' * 50}")
+    print(f"  Exit EBITDA:     ${r['exit_ebitda']:>10,.1f}  ({args.growth * 100:.1f}% CAGR)")
     print(f"  Exit EV:         ${r['exit_ev']:>10,.1f}  ({args.exit_multiple:.1f}x EBITDA)")
     print(f"  Exit Debt:       ${r['exit_debt']:>10,.1f}")
     print(f"  Exit Equity:     ${r['exit_equity']:>10,.1f}")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print(f"  MOIC:            {r['moic']:>10.2f}x")
-    print(f"  IRR:             {r['irr']*100:>10.1f}%")
+    print(f"  IRR:             {r['irr'] * 100:>10.1f}%")
     print(f"  Debt Paydown:    ${r['debt_paydown']:>10,.1f}")
-    print(f"{'─'*50}")
+    print(f"{'─' * 50}")
     print("  Returns Attribution:")
-    a = r['attribution']
-    total = a['ebitda_growth'] + a['multiple_change'] + a['deleveraging']
-    for label, val in [("EBITDA Growth", a['ebitda_growth']),
-                       ("Multiple Change", a['multiple_change']),
-                       ("Deleveraging", a['deleveraging'])]:
+    a = r["attribution"]
+    total = a["ebitda_growth"] + a["multiple_change"] + a["deleveraging"]
+    for label, val in [
+        ("EBITDA Growth", a["ebitda_growth"]),
+        ("Multiple Change", a["multiple_change"]),
+        ("Deleveraging", a["deleveraging"]),
+    ]:
         pct = val / total * 100 if total else 0
         print(f"    {label:<18} {val:>6.2f}x  ({pct:>5.1f}%)")
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

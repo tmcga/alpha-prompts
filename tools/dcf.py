@@ -5,12 +5,18 @@ Usage:
     python dcf.py --fcf 100,110,121,133,146 --wacc 0.10 --terminal-growth 0.025 --net-debt 500 --shares 100
     python dcf.py --fcf 100,110,121,133,146 --wacc 0.10 --exit-multiple 12 --net-debt 500 --shares 100
 """
+
 import argparse
 
 
-def dcf_valuation(fcfs: list[float], wacc: float, terminal_growth: float = None,
-                  exit_multiple: float = None, net_debt: float = 0,
-                  shares: float = 1) -> dict:
+def dcf_valuation(
+    fcfs: list[float],
+    wacc: float,
+    terminal_growth: float = None,
+    exit_multiple: float = None,
+    net_debt: float = 0,
+    shares: float = 1,
+) -> dict:
     """Calculate DCF valuation with Gordon Growth or exit multiple terminal value.
 
     Args:
@@ -62,10 +68,16 @@ def dcf_valuation(fcfs: list[float], wacc: float, terminal_growth: float = None,
     }
 
 
-def sensitivity_table(fcfs: list[float], wacc: float, net_debt: float,
-                      shares: float, terminal_growth: float = None,
-                      exit_multiple: float = None,
-                      wacc_range: float = 0.02, steps: int = 5) -> list[list]:
+def sensitivity_table(
+    fcfs: list[float],
+    wacc: float,
+    net_debt: float,
+    shares: float,
+    terminal_growth: float = None,
+    exit_multiple: float = None,
+    wacc_range: float = 0.02,
+    steps: int = 5,
+) -> list[list]:
     """Generate sensitivity table for price per share."""
     wacc_values = [wacc + (i - steps // 2) * (wacc_range / steps) for i in range(steps)]
 
@@ -117,13 +129,12 @@ def main():
         parser.error("Provide --terminal-growth or --exit-multiple")
 
     fcfs = [float(x.strip()) for x in args.fcf.split(",")]
-    result = dcf_valuation(fcfs, args.wacc, args.terminal_growth, args.exit_multiple,
-                           args.net_debt, args.shares)
+    result = dcf_valuation(fcfs, args.wacc, args.terminal_growth, args.exit_multiple, args.net_debt, args.shares)
 
     tv_label = f"Exit Multiple ({args.exit_multiple:.1f}x)" if args.exit_multiple else "Gordon Growth"
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  DCF Valuation ({tv_label})")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  PV of FCFs (explicit):  ${result['pv_explicit_fcfs']:>12,.2f}")
     print(f"  PV of Terminal Value:   ${result['pv_terminal_value']:>12,.2f}")
     print(f"  Enterprise Value:       ${result['enterprise_value']:>12,.2f}")
@@ -131,14 +142,19 @@ def main():
     print(f"  Equity Value:           ${result['equity_value']:>12,.2f}")
     print(f"  Price per Share:        ${result['price_per_share']:>12,.2f}")
     print(f"  Terminal Value % of EV: {result['terminal_value_pct']:>12.1f}%")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
 
     sens_label = "WACC vs Exit Multiple" if args.exit_multiple else "WACC vs Terminal Growth"
     print(f"\n  Sensitivity: Price per Share ({sens_label})")
-    print(f"{'─'*50}")
-    table = sensitivity_table(fcfs, args.wacc, args.net_debt, args.shares,
-                              terminal_growth=args.terminal_growth,
-                              exit_multiple=args.exit_multiple)
+    print(f"{'─' * 50}")
+    table = sensitivity_table(
+        fcfs,
+        args.wacc,
+        args.net_debt,
+        args.shares,
+        terminal_growth=args.terminal_growth,
+        exit_multiple=args.exit_multiple,
+    )
     print_table(table)
     print()
 

@@ -4,6 +4,7 @@
 Exposes all Alpha Stack computational tools as MCP tools that Claude Desktop
 can invoke directly through natural language conversation.
 """
+
 import json
 import os
 import sys
@@ -101,9 +102,22 @@ async def _lbo(
         da_pct: D&A as pct of EBITDA (default 10% when tax_rate provided)
     """
     try:
-        return _fmt(lbo_returns(ebitda, entry_multiple, exit_multiple, leverage,
-                                interest_rate, ebitda_growth, years, amortization_pct,
-                                tax_rate, capex_pct, nwc_pct, da_pct))
+        return _fmt(
+            lbo_returns(
+                ebitda,
+                entry_multiple,
+                exit_multiple,
+                leverage,
+                interest_rate,
+                ebitda_growth,
+                years,
+                amortization_pct,
+                tax_rate,
+                capex_pct,
+                nwc_pct,
+                da_pct,
+            )
+        )
     except Exception as e:
         return f"Error: {e}"
 
@@ -136,9 +150,20 @@ async def _wacc(
         alpha: Company-specific alpha (default 0)
     """
     try:
-        return _fmt(wacc_calc(equity_value, debt_value, tax_rate, risk_free,
-                              beta, equity_risk_premium, cost_of_debt,
-                              size_premium, country_risk, alpha))
+        return _fmt(
+            wacc_calc(
+                equity_value,
+                debt_value,
+                tax_rate,
+                risk_free,
+                beta,
+                equity_risk_premium,
+                cost_of_debt,
+                size_premium,
+                country_risk,
+                alpha,
+            )
+        )
     except Exception as e:
         return f"Error: {e}"
 
@@ -222,8 +247,9 @@ async def _cb(
         risk_free: Risk-free rate
     """
     try:
-        return _fmt(cb_calc(face, coupon_rate, maturity, credit_spread,
-                            stock_price, conversion_ratio, stock_vol, risk_free))
+        return _fmt(
+            cb_calc(face, coupon_rate, maturity, credit_spread, stock_price, conversion_ratio, stock_vol, risk_free)
+        )
     except Exception as e:
         return f"Error: {e}"
 
@@ -417,8 +443,7 @@ async def _brinson(
         sector_names: Sector labels (optional)
     """
     try:
-        return _fmt(brinson_attribution(port_weights, port_returns,
-                                        bench_weights, bench_returns, sector_names))
+        return _fmt(brinson_attribution(port_weights, port_returns, bench_weights, bench_returns, sector_names))
     except Exception as e:
         return f"Error: {e}"
 
@@ -445,8 +470,7 @@ async def _bl(
         asset_names: Asset labels (optional)
     """
     try:
-        return _fmt(bl_calc(market_weights, cov_matrix, risk_aversion, tau,
-                            P, Q, asset_names=asset_names))
+        return _fmt(bl_calc(market_weights, cov_matrix, risk_aversion, tau, P, Q, asset_names=asset_names))
     except Exception as e:
         return f"Error: {e}"
 
@@ -475,8 +499,9 @@ async def _mc(
         goal: Target ending value for success probability (default 0)
     """
     try:
-        return _fmt(monte_carlo_sim(initial, expected_return, volatility, years,
-                                    num_sims, withdrawal_rate, contribution, goal))
+        return _fmt(
+            monte_carlo_sim(initial, expected_return, volatility, years, num_sims, withdrawal_rate, contribution, goal)
+        )
     except Exception as e:
         return f"Error: {e}"
 
@@ -506,8 +531,7 @@ async def _ma(
         cvr_prob: Probability CVR pays out (default 0)
     """
     try:
-        return _fmt(ma_calc(current_price, offer_price, days_to_close,
-                            risk_free, downside_price, cvr_value, cvr_prob))
+        return _fmt(ma_calc(current_price, offer_price, days_to_close, risk_free, downside_price, cvr_value, cvr_prob))
     except Exception as e:
         return f"Error: {e}"
 
@@ -535,8 +559,7 @@ async def _re(
         dev_cost: Total development cost for development spread analysis (optional)
     """
     try:
-        return _fmt(real_estate_valuation(noi, cap_rate, property_value,
-                                          risk_free, noi_growth, dev_cost))
+        return _fmt(real_estate_valuation(noi, cap_rate, property_value, risk_free, noi_growth, dev_cost))
     except Exception as e:
         return f"Error: {e}"
 
@@ -625,8 +648,7 @@ async def _mm(
         order_intensity: Order arrival rate (kappa). Higher = more aggressive quoting
     """
     try:
-        return _fmt(optimal_quotes(mid_price, inventory, risk_aversion,
-                                   volatility, time_remaining, order_intensity))
+        return _fmt(optimal_quotes(mid_price, inventory, risk_aversion, volatility, time_remaining, order_intensity))
     except Exception as e:
         return f"Error: {e}"
 

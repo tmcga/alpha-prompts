@@ -8,10 +8,12 @@ Usage:
         --views "1,0,-1" --view-returns 0.02 \
         --tau 0.05 --risk-aversion 2.5
 """
+
 import argparse
 
 
 # --- Minimal matrix operations (no numpy) ---
+
 
 def mat_zeros(rows: int, cols: int) -> list[list[float]]:
     return [[0.0] * cols for _ in range(rows)]
@@ -68,16 +70,21 @@ def col_to_vec(M: list[list[float]]) -> list[float]:
 
 # --- Black-Litterman ---
 
-def black_litterman(market_weights: list[float], cov_matrix: list[list[float]],
-                    risk_aversion: float, tau: float,
-                    P: list[list[float]] | None = None,
-                    Q: list[float] | None = None,
-                    omega: list[list[float]] | None = None,
-                    asset_names: list[str] | None = None) -> dict:
+
+def black_litterman(
+    market_weights: list[float],
+    cov_matrix: list[list[float]],
+    risk_aversion: float,
+    tau: float,
+    P: list[list[float]] | None = None,
+    Q: list[float] | None = None,
+    omega: list[list[float]] | None = None,
+    asset_names: list[str] | None = None,
+) -> dict:
     """Black-Litterman model: equilibrium returns blended with investor views."""
     n = len(market_weights)
     if asset_names is None:
-        asset_names = [f"Asset {i+1}" for i in range(n)]
+        asset_names = [f"Asset {i + 1}" for i in range(n)]
 
     Sigma = cov_matrix
     w_mkt = vec_to_col(market_weights)
@@ -94,8 +101,7 @@ def black_litterman(market_weights: list[float], cov_matrix: list[list[float]],
         omega_inv = mat_inverse(omega)
         Pt = mat_transpose(P)
         left_inv = mat_inverse(mat_add(tau_Sigma_inv, mat_mult(mat_mult(Pt, omega_inv), P)))
-        right_sum = mat_add(mat_mult(tau_Sigma_inv, vec_to_col(pi)),
-                            mat_mult(mat_mult(Pt, omega_inv), vec_to_col(Q)))
+        right_sum = mat_add(mat_mult(tau_Sigma_inv, vec_to_col(pi)), mat_mult(mat_mult(Pt, omega_inv), vec_to_col(Q)))
         posterior_col = mat_mult(left_inv, right_sum)
         posterior = col_to_vec(posterior_col)
         optimal_col = mat_mult(mat_inverse(mat_scale(Sigma, risk_aversion)), posterior_col)
@@ -111,7 +117,7 @@ def black_litterman(market_weights: list[float], cov_matrix: list[list[float]],
     for i in range(n):
         for j in range(n):
             port_var += normalized_weights[i] * normalized_weights[j] * Sigma[i][j]
-    port_risk = port_var ** 0.5
+    port_risk = port_var**0.5
 
     return {
         "equilibrium_returns": pi,
@@ -149,26 +155,28 @@ def main():
 
     r = black_litterman(weights, cov, args.risk_aversion, args.tau, P, Q, asset_names=names)
 
-    print(f"\n{'='*65}")
+    print(f"\n{'=' * 65}")
     print("  Black-Litterman Portfolio Optimization")
-    print(f"{'='*65}")
+    print(f"{'=' * 65}")
     print(f"  Risk Aversion: {r['risk_aversion']:.2f}    Tau: {r['tau']:.3f}")
-    print(f"{'─'*65}")
+    print(f"{'─' * 65}")
     print(f"  {'Asset':<12} {'Mkt Wt':>7} {'Equil R':>8} {'BL R':>8} {'Opt Wt':>7} {'Delta':>7}")
-    print(f"  {'─'*12} {'─'*7} {'─'*8} {'─'*8} {'─'*7} {'─'*7}")
+    print(f"  {'─' * 12} {'─' * 7} {'─' * 8} {'─' * 8} {'─' * 7} {'─' * 7}")
 
-    for i, name in enumerate(r['asset_names']):
-        mw = r['market_weights'][i]
-        eq = r['equilibrium_returns'][i]
-        bl = r['posterior_returns'][i]
-        ow = r['optimal_weights'][i]
+    for i, name in enumerate(r["asset_names"]):
+        mw = r["market_weights"][i]
+        eq = r["equilibrium_returns"][i]
+        bl = r["posterior_returns"][i]
+        ow = r["optimal_weights"][i]
         delta = ow - mw
-        print(f"  {name:<12} {mw*100:>6.1f}% {eq*100:>+7.2f}% {bl*100:>+7.2f}% {ow*100:>6.1f}% {delta*100:>+6.1f}%")
+        print(
+            f"  {name:<12} {mw * 100:>6.1f}% {eq * 100:>+7.2f}% {bl * 100:>+7.2f}% {ow * 100:>6.1f}% {delta * 100:>+6.1f}%"
+        )
 
-    print(f"{'─'*65}")
-    print(f"  Portfolio Expected Return: {r['portfolio_return']*100:>+.2f}%")
-    print(f"  Portfolio Risk (Vol):      {r['portfolio_risk']*100:>.2f}%")
-    print(f"{'='*65}\n")
+    print(f"{'─' * 65}")
+    print(f"  Portfolio Expected Return: {r['portfolio_return'] * 100:>+.2f}%")
+    print(f"  Portfolio Risk (Vol):      {r['portfolio_risk'] * 100:>.2f}%")
+    print(f"{'=' * 65}\n")
 
 
 if __name__ == "__main__":

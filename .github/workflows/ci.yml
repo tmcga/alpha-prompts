@@ -14,8 +14,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4
       - run: uv tool install ruff
-      - run: ruff check tools/ mcp_server.py
-      - run: ruff format --check tools/ mcp_server.py
+      - run: ruff check tools/ mcp_server.py tests/
+      - run: ruff format --check tools/ mcp_server.py tests/
 
   test-tools:
     name: Test Tools
@@ -28,6 +28,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - run: pip install pytest
       - name: Run tool tests
         run: python -m pytest tests/ -v
 

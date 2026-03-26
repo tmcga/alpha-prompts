@@ -5,11 +5,11 @@ Usage:
     python vc_returns.py --fund --contributions 10,10,10,5,5 --distributions 0,0,0,5,15 --nav 60 --years 5
     python vc_returns.py --dilution --rounds "5M@20M,10M@80M,25M@300M" --founder-shares 8000000
 """
+
 import argparse
 
 
-def fund_metrics(contributions: list[float], distributions: list[float],
-                 nav: float, years: float) -> dict:
+def fund_metrics(contributions: list[float], distributions: list[float], nav: float, years: float) -> dict:
     """Calculate VC fund performance metrics (TVPI, DPI, RVPI, IRR)."""
     total_contributed = sum(contributions)
     total_distributed = sum(distributions)
@@ -73,10 +73,10 @@ def dilution_waterfall(rounds: list[dict], founder_shares: int) -> dict:
     stages = []
 
     for i, rnd in enumerate(rounds):
-        pre_money = rnd['pre_money']
-        invested = rnd['invested']
+        pre_money = rnd["pre_money"]
+        invested = rnd["invested"]
         post_money = pre_money + invested
-        pool_increase = rnd.get('pool_increase', 0)
+        pool_increase = rnd.get("pool_increase", 0)
 
         # Price per share
         price_per_share = pre_money / total_shares if total_shares > 0 else 0
@@ -93,19 +93,21 @@ def dilution_waterfall(rounds: list[dict], founder_shares: int) -> dict:
         founder_pct = founder_shares / total_shares if total_shares > 0 else 0
         investor_pct = new_shares / total_shares if total_shares > 0 else 0
 
-        stages.append({
-            "round": i + 1,
-            "invested": invested,
-            "pre_money": pre_money,
-            "post_money": post_money,
-            "price_per_share": price_per_share,
-            "new_shares": new_shares,
-            "pool_shares": pool_shares,
-            "total_shares": total_shares,
-            "founder_ownership": founder_pct,
-            "round_investor_ownership": investor_pct,
-            "implied_valuation": post_money,
-        })
+        stages.append(
+            {
+                "round": i + 1,
+                "invested": invested,
+                "pre_money": pre_money,
+                "post_money": post_money,
+                "price_per_share": price_per_share,
+                "new_shares": new_shares,
+                "pool_shares": pool_shares,
+                "total_shares": total_shares,
+                "founder_ownership": founder_pct,
+                "round_investor_ownership": investor_pct,
+                "implied_valuation": post_money,
+            }
+        )
 
     return {
         "founder_shares": founder_shares,
@@ -133,25 +135,25 @@ def main():
         dists = [float(x) for x in args.distributions.split(",")]
         r = fund_metrics(contribs, dists, args.nav, args.years)
 
-        print(f"\n{'='*50}")
+        print(f"\n{'=' * 50}")
         print("  VC Fund Performance")
-        print(f"{'='*50}")
+        print(f"{'=' * 50}")
         print(f"  Total Contributed: ${r['total_contributed']:>10,.1f}M")
         print(f"  Total Distributed: ${r['total_distributed']:>10,.1f}M")
         print(f"  NAV (Residual):    ${r['nav']:>10,.1f}M")
-        print(f"{'─'*50}")
+        print(f"{'─' * 50}")
         print(f"  TVPI:              {r['tvpi']:>10.2f}x")
         print(f"  DPI:               {r['dpi']:>10.2f}x")
         print(f"  RVPI:              {r['rvpi']:>10.2f}x")
-        print(f"  Net IRR:           {r['net_irr']*100:>10.1f}%")
-        print(f"{'─'*50}")
+        print(f"  Net IRR:           {r['net_irr'] * 100:>10.1f}%")
+        print(f"{'─' * 50}")
         print("  J-Curve (cumulative net CF):")
-        mx = max(abs(v) for v in r['j_curve'])
-        for i, val in enumerate(r['j_curve']):
+        mx = max(abs(v) for v in r["j_curve"])
+        for i, val in enumerate(r["j_curve"]):
             bar_len = max(1, int(abs(val) / mx * 15)) if mx > 0 else 1
             bar = ("+" if val > 0 else "-") * bar_len
-            print(f"    Yr {i+1}: ${val:>8,.1f}M  {bar}")
-        print(f"{'='*50}\n")
+            print(f"    Yr {i + 1}: ${val:>8,.1f}M  {bar}")
+        print(f"{'=' * 50}\n")
 
     elif args.dilution:
         pool_increases = [float(x) for x in args.pool_increases.split(",")] if args.pool_increases else []
@@ -165,22 +167,23 @@ def main():
 
         r = dilution_waterfall(rounds, args.founder_shares)
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("  Dilution Waterfall")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"  Initial Founder Shares: {r['founder_shares']:>12,}")
-        print(f"{'─'*60}")
-        print(f"  {'Round':<7} {'Invested':>10} {'Pre-$':>10} {'Post-$':>10}"
-              f" {'Founder%':>9} {'Round%':>8}")
-        print(f"  {'─'*7} {'─'*10} {'─'*10} {'─'*10} {'─'*9} {'─'*8}")
-        for s in r['rounds']:
-            print(f"  R{s['round']:<6} ${s['invested']/1e6:>8.1f}M ${s['pre_money']/1e6:>8.1f}M"
-                  f" ${s['implied_valuation']/1e6:>8.1f}M"
-                  f" {s['founder_ownership']*100:>8.1f}% {s['round_investor_ownership']*100:>7.1f}%")
-        print(f"{'─'*60}")
-        print(f"  Final Founder Ownership: {r['final_founder_ownership']*100:>8.1f}%")
+        print(f"{'─' * 60}")
+        print(f"  {'Round':<7} {'Invested':>10} {'Pre-$':>10} {'Post-$':>10} {'Founder%':>9} {'Round%':>8}")
+        print(f"  {'─' * 7} {'─' * 10} {'─' * 10} {'─' * 10} {'─' * 9} {'─' * 8}")
+        for s in r["rounds"]:
+            print(
+                f"  R{s['round']:<6} ${s['invested'] / 1e6:>8.1f}M ${s['pre_money'] / 1e6:>8.1f}M"
+                f" ${s['implied_valuation'] / 1e6:>8.1f}M"
+                f" {s['founder_ownership'] * 100:>8.1f}% {s['round_investor_ownership'] * 100:>7.1f}%"
+            )
+        print(f"{'─' * 60}")
+        print(f"  Final Founder Ownership: {r['final_founder_ownership'] * 100:>8.1f}%")
         print(f"  Final Total Shares:      {r['final_total_shares']:>12,}")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
     else:
         parser.error("Specify --fund or --dilution mode")
