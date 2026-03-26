@@ -79,3 +79,34 @@ jobs:
           done
           if [ "$fail" -eq 1 ]; then exit 1; fi
           echo "All $count skills valid"
+      - name: Verify skill cross-references match registry
+        run: |
+          # Extract registered commands from CLAUDE.md (| `/command` | pattern)
+          registered=$(grep -oP '(?<=\| `/)[\w-]+(?=` \|)' CLAUDE.md | sort -u)
+          # Also allow self-references to skill directory names
+          dirs=$(ls -1 skills/)
+          valid=$(printf '%s\n%s' "$registered" "$dirs" | sort -u)
+
+          fail=0
+          # Find all /command references in SKILL.md files (backtick-wrapped)
+          grep -rnoP '`/[\w-]+`' skills/*/SKILL.md | while IFS=: read -r file line match; do
+            cmd=$(echo "$match" | tr -d '`/' )
+            if ! echo "$valid" | grep -qx "$cmd"; then
+              echo "FAIL: $file:$line references unknown command $match"
+              echo "fail" > /tmp/xref_fail
+            fi
+          done
+          if [ -f /tmp/xref_fail ]; then exit 1; fi
+          echo "All skill cross-references valid"
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install bandit
+      - name: Run bandit security scan
+        run: bandit -r tools/ mcp_server.py -ll -q
