@@ -510,3 +510,37 @@ class TestMarketMaker:
     def test_zero_intensity_raises(self):
         with pytest.raises(ValueError, match="Order intensity"):
             optimal_quotes(100, 0, 0.01, 0.02, 1.0, 0)
+
+
+class TestFetch:
+    """Tests for fetch.py — market data fetcher (offline-safe)."""
+
+    def test_import(self):
+        from fetch import treasury_rates, fred_series, COMMON_FRED
+
+        assert callable(treasury_rates)
+        assert callable(fred_series)
+        assert "fed_funds" in COMMON_FRED
+
+    def test_treasury_returns_dict(self):
+        from fetch import treasury_rates
+
+        r = treasury_rates()
+        # Either returns rates or an error dict — both are valid
+        assert isinstance(r, dict)
+        assert "rates" in r or "error" in r
+
+    def test_fred_returns_dict(self):
+        from fetch import fred_series
+
+        r = fred_series(["DGS10"])
+        assert isinstance(r, dict)
+        assert "series" in r
+        assert "DGS10" in r["series"]
+
+    def test_fred_handles_bad_series(self):
+        from fetch import fred_series
+
+        r = fred_series(["NONEXISTENT_SERIES_XYZ"])
+        assert isinstance(r, dict)
+        assert "NONEXISTENT_SERIES_XYZ" in r["series"]

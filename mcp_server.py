@@ -55,6 +55,8 @@ fund_metrics = _lazy("vc_returns", "fund_metrics")
 dilution_waterfall = _lazy("vc_returns", "dilution_waterfall")
 loan_amortization = _lazy("loan_amort", "loan_amortization")
 optimal_quotes = _lazy("market_maker", "optimal_quotes")
+treasury_rates = _lazy("fetch", "treasury_rates")
+fred_series = _lazy("fetch", "fred_series")
 
 mcp = FastMCP("alpha-stack")
 
@@ -611,6 +613,26 @@ async def _mm(
         order_intensity: Order arrival rate (kappa). Higher = more aggressive quoting
     """
     return _safe_call(optimal_quotes, mid_price, inventory, risk_aversion, volatility, time_remaining, order_intensity)
+
+
+@mcp.tool(name="treasury_yield_curve")
+async def _treasury() -> str:
+    """Fetch the latest US Treasury yield curve from treasury.gov (no API key needed).
+
+    Returns rates for 1M through 30Y tenors as decimals (e.g., 0.045 = 4.5%).
+    """
+    return _safe_call(treasury_rates)
+
+
+@mcp.tool(name="fred_data")
+async def _fred(series_ids: list[str]) -> str:
+    """Fetch latest values from FRED (Federal Reserve Economic Data).
+
+    Args:
+        series_ids: FRED series IDs. Common: DGS10 (10Y yield), FEDFUNDS (fed funds),
+            DGS2 (2Y yield), VIXCLS (VIX), CPIAUCSL (CPI), UNRATE (unemployment)
+    """
+    return _safe_call(fred_series, series_ids)
 
 
 if __name__ == "__main__":
