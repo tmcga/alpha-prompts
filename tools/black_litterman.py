@@ -50,17 +50,24 @@ def mat_inverse(A: list[list[float]]) -> list[list[float]]:
     """
     n = len(A)
     M = [row[:] + [1.0 if i == j else 0.0 for j in range(n)] for i, row in enumerate(A)]
+    min_pivot = float("inf")
+    max_pivot = 0.0
     for col in range(n):
         pivot = max(range(col, n), key=lambda r: abs(M[r][col]))
         M[col], M[pivot] = M[pivot], M[col]
-        div = M[col][col]
-        if abs(div) < 1e-14:
+        abs_div = abs(M[col][col])
+        if abs_div < 1e-14:
             raise ValueError("Matrix is singular")
+        min_pivot = min(min_pivot, abs_div)
+        max_pivot = max(max_pivot, abs_div)
+        div = M[col][col]
         M[col] = [x / div for x in M[col]]
         for row in range(n):
             if row != col:
                 factor = M[row][col]
                 M[row] = [M[row][j] - factor * M[col][j] for j in range(2 * n)]
+    if max_pivot / min_pivot > 1e10:
+        raise ValueError("Matrix is ill-conditioned — results unreliable")
     return [row[n:] for row in M]
 
 

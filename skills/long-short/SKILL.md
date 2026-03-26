@@ -704,4 +704,4 @@ Correlation w/ Book: [X] [PASS/WARN/FAIL]
 - For LP pitch deck to market the fund --> **`/pitch-deck`** (Mode 3: Fund Pitch)
 - For systematic factor model and backtesting --> **`/quant`**
 - For sell-side equity research report format --> **`/long-short`**
-- For options strategy to express a thesis with convexity --> **`/options`**
+- For options strategy to express a thesis with convexity --> **`/derivatives`**

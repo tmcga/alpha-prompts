@@ -41,10 +41,10 @@ def brinson_attribution(
 
     port_weight_sum = sum(port_weights)
     bench_weight_sum = sum(bench_weights)
-    if abs(port_weight_sum - 1.0) > 0.05:
-        raise ValueError(f"Portfolio weights must sum to ~1.0, got {port_weight_sum:.3f}")
-    if abs(bench_weight_sum - 1.0) > 0.05:
-        raise ValueError(f"Benchmark weights must sum to ~1.0, got {bench_weight_sum:.3f}")
+    if abs(port_weight_sum - 1.0) > 0.01:
+        raise ValueError(f"Portfolio weights must sum to ~1.0, got {port_weight_sum:.4f}")
+    if abs(bench_weight_sum - 1.0) > 0.01:
+        raise ValueError(f"Benchmark weights must sum to ~1.0, got {bench_weight_sum:.4f}")
     weights_normalized = abs(port_weight_sum - 1.0) < 0.01 and abs(bench_weight_sum - 1.0) < 0.01
 
     if sector_names is None:

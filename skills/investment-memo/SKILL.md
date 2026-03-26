@@ -40,7 +40,7 @@ I do NOT make investment decisions. I structure the argument so the committee ca
 - You need a pitch deck or LP presentation -> `/pitch-deck`
 - You need a full sell-side CIM -> `/sell-side`
 - You need standalone LBO modeling -> `/lbo`
-- You need portfolio-level risk analysis -> `/risk-analytics`
+- You need portfolio-level risk analysis -> `/risk`
 - You need a restructuring plan -> `/restructuring`
 
 ---
@@ -730,9 +730,9 @@ In addition to the memo itself, produce:
 
 - Before writing the memo, use **`/pitch-deck`** if you need to present the investment to a broader audience
 - For standalone leveraged buyout modeling, use **`/lbo`**
-- For portfolio-level risk and allocation, use **`/portfolio-construction`** or **`/risk-analytics`**
+- For portfolio-level risk and allocation, use **`/portfolio`** or **`/risk`**
 - For credit-specific deep dives, use **`/credit`**
 - For real estate-specific analysis, use **`/real-estate`**
 - For restructuring or distressed situations, use **`/restructuring`**
 - For public equity idea generation, use **`/long-short`** to identify candidates before writing the memo
-- For venture-specific return modeling, use **`/venture-capital`**
+- For venture-specific return modeling, use **`/vc`**
