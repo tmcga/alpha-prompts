@@ -526,7 +526,6 @@ class TestFetch:
         from fetch import treasury_rates
 
         r = treasury_rates()
-        # Either returns rates or an error dict — both are valid
         assert isinstance(r, dict)
         assert "rates" in r or "error" in r
 
@@ -544,3 +543,38 @@ class TestFetch:
         r = fred_series(["NONEXISTENT_SERIES_XYZ"])
         assert isinstance(r, dict)
         assert "NONEXISTENT_SERIES_XYZ" in r["series"]
+
+
+class TestState:
+    """Tests for state.py — session persistence."""
+
+    def test_save_load_delete(self, tmp_path, monkeypatch):
+        import state
+
+        monkeypatch.setattr(state, "STATE_DIR", str(tmp_path))
+        r = state.save_session("test-run", {"irr": 0.24})
+        assert r["status"] == "saved"
+        loaded = state.load_session("test-run")
+        assert loaded["data"]["irr"] == 0.24
+        assert loaded["tags"] == []
+        state.delete_session("test-run")
+        missing = state.load_session("test-run")
+        assert "error" in missing
+
+    def test_list_sessions(self, tmp_path, monkeypatch):
+        import state
+
+        monkeypatch.setattr(state, "STATE_DIR", str(tmp_path))
+        state.save_session("a", {"x": 1}, tags=["lbo"])
+        state.save_session("b", {"y": 2})
+        r = state.list_sessions()
+        assert r["count"] == 2
+        names = [s["name"] for s in r["sessions"]]
+        assert "a" in names and "b" in names
+
+    def test_load_missing_returns_error(self, tmp_path, monkeypatch):
+        import state
+
+        monkeypatch.setattr(state, "STATE_DIR", str(tmp_path))
+        r = state.load_session("nonexistent")
+        assert "error" in r

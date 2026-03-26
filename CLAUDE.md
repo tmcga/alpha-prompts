@@ -157,6 +157,7 @@ When a user's question involves quantitative analysis, run the relevant Python t
 | Market making, optimal quoting | `python3 tools/market_maker.py` |
 | Treasury yield curve, risk-free rate | `python3 tools/fetch.py --treasury` |
 | Economic data (fed funds, CPI, VIX) | `python3 tools/fetch.py --fred DGS10,FEDFUNDS` |
+| Save/load analysis results | `python3 tools/state.py` |
 
 ## Output Standards
 

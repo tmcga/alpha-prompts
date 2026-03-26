@@ -57,6 +57,10 @@ loan_amortization = _lazy("loan_amort", "loan_amortization")
 optimal_quotes = _lazy("market_maker", "optimal_quotes")
 treasury_rates = _lazy("fetch", "treasury_rates")
 fred_series = _lazy("fetch", "fred_series")
+save_session = _lazy("state", "save_session")
+load_session = _lazy("state", "load_session")
+list_sessions_fn = _lazy("state", "list_sessions")
+delete_session = _lazy("state", "delete_session")
 
 mcp = FastMCP("alpha-stack")
 
@@ -615,6 +619,7 @@ async def _mm(
     return _safe_call(optimal_quotes, mid_price, inventory, risk_aversion, volatility, time_remaining, order_intensity)
 
 
+<<<<<<< HEAD
 @mcp.tool(name="treasury_yield_curve")
 async def _treasury() -> str:
     """Fetch the latest US Treasury yield curve from treasury.gov (no API key needed).
@@ -633,6 +638,44 @@ async def _fred(series_ids: list[str]) -> str:
             DGS2 (2Y yield), VIXCLS (VIX), CPIAUCSL (CPI), UNRATE (unemployment)
     """
     return _safe_call(fred_series, series_ids)
+
+
+@mcp.tool(name="save_analysis")
+async def _save(name: str, data: dict, tags: list[str] | None = None) -> str:
+    """Save analysis results for later retrieval. Use after completing any analysis.
+
+    Args:
+        name: Session name (e.g., 'techcorp-lbo', 'q4-attribution')
+        data: The analysis result dict to save
+        tags: Optional tags for filtering (e.g., ['lbo', 'cybervault'])
+    """
+    return _safe_call(save_session, name, data, tags)
+
+
+@mcp.tool(name="load_analysis")
+async def _load(name: str) -> str:
+    """Load a previously saved analysis by name.
+
+    Args:
+        name: Session name to load
+    """
+    return _safe_call(load_session, name)
+
+
+@mcp.tool(name="list_analyses")
+async def _list_sessions() -> str:
+    """List all saved analysis sessions with names, dates, and tags."""
+    return _safe_call(list_sessions_fn)
+
+
+@mcp.tool(name="delete_analysis")
+async def _del(name: str) -> str:
+    """Delete a saved analysis session.
+
+    Args:
+        name: Session name to delete
+    """
+    return _safe_call(delete_session, name)
 
 
 if __name__ == "__main__":
