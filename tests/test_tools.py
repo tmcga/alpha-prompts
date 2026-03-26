@@ -161,6 +161,7 @@ class TestBondYield:
     def test_par_bond(self):
         r = bond_analytics(1000, 0.05, 1000, 10)
         assert abs(r["ytm"] - 0.05) < 0.001
+        assert r["ytm_converged"] is True
 
     def test_discount_bond(self):
         r = bond_analytics(1000, 0.05, 980, 10)
@@ -171,6 +172,13 @@ class TestBondYield:
         assert r["g_spread"] is not None
         assert r["z_spread"] is not None
         assert r["g_spread"] > 0
+        assert r["z_spread_converged"] is True
+
+    def test_wide_z_spread(self):
+        """Distressed bond with spread > 1000bps should converge."""
+        r = bond_analytics(1000, 0.05, 600, 5, benchmark_yield=0.04)
+        assert r["z_spread"] is not None
+        assert r["z_spread"] > 0.10
 
 
 # ── Merton Model ──────────────────────────────────────────────────────────
@@ -331,6 +339,11 @@ class TestMergerArb:
         assert r["gross_spread"] > 0
         assert r["annualized_spread"] > r["gross_spread"]
         assert 0 < r["implied_probability"] < 1
+
+    def test_upside_equals_downside(self):
+        r = merger_arb(50, 50, 90, downside_price=50)
+        assert r["implied_probability"] is None
+        assert r["breakeven_probability"] is None
 
     def test_cvr(self):
         r1 = merger_arb(45, 50, 90)

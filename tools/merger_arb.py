@@ -55,12 +55,15 @@ def merger_arb(
     # => p = (required_return - downside) / (upside - downside)
     required_return = (1 + risk_free) ** (days_to_close / 365) - 1
     spread_range = upside - downside
-    implied_probability = (required_return - downside) / spread_range if spread_range != 0 else 0
-    implied_probability = max(0, min(1, implied_probability))
-
-    # Break-even probability (where E[return] = 0)
-    breakeven_probability = -downside / spread_range if spread_range != 0 else 0
-    breakeven_probability = max(0, min(1, breakeven_probability))
+    if abs(spread_range) < 1e-10:
+        implied_probability = None
+        breakeven_probability = None
+    else:
+        implied_probability = (required_return - downside) / spread_range
+        implied_probability = max(0, min(1, implied_probability))
+        # Break-even probability (where E[return] = 0)
+        breakeven_probability = -downside / spread_range
+        breakeven_probability = max(0, min(1, breakeven_probability))
 
     # Risk-reward ratio
     risk_reward = abs(upside / downside) if downside != 0 else float("inf")
@@ -137,8 +140,12 @@ def main():
     print(f"  Downside (if break): ${r['downside_per_share']:>+10.2f}")
     print(f"  Risk/Reward:         {r['risk_reward']:>10.2f}x")
     print(f"{'─' * 50}")
-    print(f"  Implied Deal Prob:   {r['implied_probability'] * 100:>10.1f}%")
-    print(f"  Break-Even Prob:     {r['breakeven_probability'] * 100:>10.1f}%")
+    if r["implied_probability"] is not None:
+        print(f"  Implied Deal Prob:   {r['implied_probability'] * 100:>10.1f}%")
+        print(f"  Break-Even Prob:     {r['breakeven_probability'] * 100:>10.1f}%")
+    else:
+        print(f"  Implied Deal Prob:   {'N/A':>10}  (upside = downside)")
+        print(f"  Break-Even Prob:     {'N/A':>10}")
     print(f"{'=' * 50}\n")
 
 

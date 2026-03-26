@@ -41,13 +41,13 @@ def bond_ytm(
 
         diff = pv - price
         if abs(diff) < tol:
-            return ytm
+            return ytm, True
         if abs(dpv) < 1e-14:
             break
         ytm -= diff / dpv
         ytm = max(-0.99, min(ytm, 10.0))
 
-    return ytm
+    return ytm, False
 
 
 def bond_analytics(
@@ -67,7 +67,7 @@ def bond_analytics(
     current_yield = annual_coupon / price if price else 0
 
     # YTM
-    ytm = bond_ytm(face, coupon_rate, price, years, freq)
+    ytm, ytm_converged = bond_ytm(face, coupon_rate, price, years, freq)
     r = ytm / freq
 
     # Cash flows and Macaulay duration
@@ -99,14 +99,16 @@ def bond_analytics(
     # Z-spread approximation (constant spread over flat benchmark curve)
     z_spread = None
     if benchmark_yield is not None:
-        zs_low, zs_high = 0.0, 0.10
-        for _ in range(100):
+        zs_low, zs_high = 0.0, 0.50
+        z_spread_converged = False
+        for _ in range(200):
             zs_mid = (zs_low + zs_high) / 2
             pv = 0
             for t in range(1, n + 1):
                 cf = coupon if t < n else coupon + face
                 pv += cf / (1 + (benchmark_yield + zs_mid) / freq) ** t
             if abs(pv - price) < 1e-8:
+                z_spread_converged = True
                 break
             if pv > price:
                 zs_low = zs_mid
@@ -117,6 +119,7 @@ def bond_analytics(
     return {
         "current_yield": current_yield,
         "ytm": ytm,
+        "ytm_converged": ytm_converged,
         "macaulay_duration": mac_duration,
         "modified_duration": mod_duration,
         "convexity": convexity,
@@ -124,6 +127,7 @@ def bond_analytics(
         "periods": n,
         "g_spread": g_spread,
         "z_spread": z_spread,
+        "z_spread_converged": z_spread_converged if benchmark_yield is not None else None,
     }
 
 
