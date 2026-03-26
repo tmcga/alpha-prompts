@@ -9,15 +9,7 @@ Usage:
 import argparse
 import math
 
-
-def norm_cdf(x: float) -> float:
-    """Standard normal cumulative distribution function."""
-    return 0.5 * (1 + math.erf(x / math.sqrt(2)))
-
-
-def norm_pdf(x: float) -> float:
-    """Standard normal probability density function."""
-    return math.exp(-0.5 * x * x) / math.sqrt(2 * math.pi)
+from _math import norm_cdf, norm_pdf
 
 
 def black_scholes(
@@ -58,14 +50,14 @@ def black_scholes(
     if option_type == "call":
         price = s_adj * norm_cdf(d1) - strike * df * norm_cdf(d2)
         delta = qf * norm_cdf(d1)
-        rho = strike * time * df * norm_cdf(d2) / 100
+        rho = strike * time * df * norm_cdf(d2) / 100  # per 1% rate move
     else:
         price = strike * df * norm_cdf(-d2) - s_adj * norm_cdf(-d1)
         delta = qf * (norm_cdf(d1) - 1)
-        rho = -strike * time * df * norm_cdf(-d2) / 100
+        rho = -strike * time * df * norm_cdf(-d2) / 100  # per 1% rate move
 
     gamma = qf * norm_pdf(d1) / (spot * vol * sqrt_t)
-    vega = spot * qf * norm_pdf(d1) * sqrt_t / 100
+    vega = spot * qf * norm_pdf(d1) * sqrt_t / 100  # per 1% vol move
     theta = (
         -(spot * qf * norm_pdf(d1) * vol) / (2 * sqrt_t)
         + div_yield * spot * qf * norm_cdf(d1 if option_type == "call" else -d1) * (1 if option_type == "call" else -1)

@@ -40,9 +40,11 @@ else
 fi
 
 # 4. Update Claude Desktop config
-python3 << PYEOF
+export REPO_DIR
+python3 << 'PYEOF'
 import json, os
 
+repo_dir = os.environ["REPO_DIR"]
 config_path = os.path.expanduser("~/Library/Application Support/Claude/claude_desktop_config.json")
 config = {}
 if os.path.exists(config_path):
@@ -54,7 +56,7 @@ if "mcpServers" not in config:
 
 config["mcpServers"]["alpha-stack"] = {
     "command": "uv",
-    "args": ["run", "--directory", "$REPO_DIR", "python", "mcp_server.py"]
+    "args": ["run", "--directory", repo_dir, "python", "mcp_server.py"]
 }
 
 os.makedirs(os.path.dirname(config_path), exist_ok=True)
