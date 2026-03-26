@@ -38,6 +38,8 @@ def merton_model(asset_value: float, debt_face: float, asset_vol: float, risk_fr
     """
     if maturity <= 0:
         raise ValueError("Maturity must be positive")
+    if asset_vol <= 0:
+        raise ValueError("Asset volatility must be positive")
 
     sqrt_t = math.sqrt(maturity)
 

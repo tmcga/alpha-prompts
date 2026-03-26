@@ -47,6 +47,10 @@ class TestDCF:
         assert r["equity_value"] == r["enterprise_value"] - 500
         assert r["price_per_share"] == r["equity_value"] / 100
 
+    def test_empty_fcf_raises(self):
+        with pytest.raises(ValueError, match="FCF list must not be empty"):
+            dcf_valuation([], wacc=0.10, terminal_growth=0.025)
+
     def test_wacc_must_exceed_growth(self):
         with pytest.raises(ValueError):
             dcf_valuation([100], wacc=0.02, terminal_growth=0.03)
@@ -183,6 +187,10 @@ class TestMerton:
         assert r["equity_value"] > 0
         assert r["equity_value"] + r["debt_value"] == pytest.approx(1000, rel=1e-6)
 
+    def test_zero_vol_raises(self):
+        with pytest.raises(ValueError, match="Asset volatility must be positive"):
+            merton_model(1000, 600, 0, 0.04, 5)
+
     def test_high_leverage_more_risk(self):
         r1 = merton_model(1000, 300, 0.25, 0.04, 5)
         r2 = merton_model(1000, 800, 0.25, 0.04, 5)
@@ -231,6 +239,10 @@ class TestPortfolioRisk:
         r = benchmark_relative(self.returns, bench)
         assert "tracking_error" in r
         assert "information_ratio" in r
+
+    def test_benchmark_relative_single_obs_raises(self):
+        with pytest.raises(ValueError, match="at least 2"):
+            benchmark_relative([0.05], [0.03])
 
 
 # ── Kelly Criterion ────────────────────────────────────────────────────────
@@ -350,6 +362,12 @@ class TestCapRate:
     def test_cap_rate_from_value(self):
         r = real_estate_valuation(5000000, property_value=100000000)
         assert r["cap_rate"] == pytest.approx(0.05)
+
+    def test_zero_noi_sensitivity(self):
+        r = real_estate_valuation(0, cap_rate=0.05)
+        assert r["property_value"] == 0
+        for s in r["sensitivity"].values():
+            assert s["change_pct"] == 0.0
 
     def test_development_spread(self):
         r = real_estate_valuation(5000000, cap_rate=0.05, dev_cost=80000000)
