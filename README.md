@@ -17,6 +17,8 @@ cd ~/alpha-stack && ./setup.sh
 
 Open Claude Code. Type `/deal`. You're running.
 
+**For Claude Desktop** (no terminal needed): run `./setup-mcp.sh` instead. See [MCP Server](#claude-desktop-mcp-server) below.
+
 ---
 
 ## The Workflow
@@ -87,43 +89,81 @@ Full tool documentation at [tools/README.md](tools/README.md).
 
 ## Claude Desktop (MCP Server)
 
-Alpha Stack also runs as an **MCP server** in Claude Desktop, exposing all 23 tool functions as native tools. No terminal needed — Claude calls the tools directly when you ask a finance question.
+Alpha Stack is also a **finance MCP server** — 23 tools that Claude Desktop can call natively. No terminal, no Python knowledge. Just ask a question and Claude runs the math.
 
-### Quick Setup
+### Setup
 
 ```bash
-./setup-mcp.sh
+git clone https://github.com/tmcga/alpha-prompts.git ~/alpha-stack
+cd ~/alpha-stack && ./setup-mcp.sh
 ```
 
-Restart Claude Desktop. The tools appear automatically (look for the hammer icon).
+Restart Claude Desktop. Look for the hammer icon — that means the tools are live.
 
-### Manual Setup
+<details>
+<summary>Manual setup (without installer)</summary>
 
-1. Install dependencies: `uv sync`
-2. Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+1. Install [uv](https://docs.astral.sh/uv/): `curl -LsSf https://astral.sh/uv/install.sh | sh`
+2. Install dependencies: `cd ~/alpha-stack && uv sync`
+3. Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
     "alpha-stack": {
       "command": "uv",
-      "args": ["run", "--directory", "/path/to/alpha-stack", "python", "mcp_server.py"]
+      "args": ["run", "--directory", "/absolute/path/to/alpha-stack", "python", "mcp_server.py"]
     }
   }
 }
 ```
-3. Restart Claude Desktop.
+4. Restart Claude Desktop.
+</details>
+
+### 23 MCP Tools
+
+| Category | Tools Available |
+|----------|---------------|
+| **Valuation** | `dcf_valuation` `lbo_returns` `wacc` |
+| **Options & Derivatives** | `black_scholes` `implied_volatility` `convertible_bond` |
+| **Fixed Income & Credit** | `bond_analytics` `merton_model` `altman_zscore` `credit_from_spread` |
+| **Portfolio & Risk** | `portfolio_metrics` `benchmark_relative` `kelly_criterion` `multi_outcome_kelly` `brinson_attribution` `black_litterman` `monte_carlo_sim` |
+| **M&A** | `merger_arb` |
+| **RE / VC / Lending** | `real_estate_valuation` `fund_metrics` `dilution_waterfall` `loan_amortization` |
+| **Quant Trading** | `optimal_quotes` |
 
 ### What It Looks Like
 
 ```
-You:     What's the DCF value for a company with FCFs of 100, 110, 121, 133, 146?
-         WACC is 10%, terminal growth 2.5%, net debt $500M, 100M shares.
+You:    I'm looking at a company with EBITDA of $100M. Entry at 10x, exit at 11x,
+        5x leverage, 6% rate, 8% EBITDA growth, 5 year hold. What are sponsor returns?
 
-Claude:  [calls dcf_valuation tool]
-         Enterprise Value: $1,542,078
-         Equity Value: $1,042,078
-         Price per Share: $10.42
-         Terminal value is 70.5% of EV.
+Claude: [calls lbo_returns tool]
+
+        MOIC: 2.99x
+        IRR: 24.5%
+
+        Returns Attribution:
+          EBITDA Growth:    0.9%
+          Multiple Change: 27.6%
+          Deleveraging:    71.5%
+
+        The majority of returns come from deleveraging — the debt paydown
+        from $500M to $120M drives 71.5% of the return. Multiple expansion
+        from 10x to 11x adds another 27.6%...
+```
+
+```
+You:    Size my position. Win probability 55%, win/loss ratio 1.5.
+
+Claude: [calls kelly_criterion tool]
+
+        Full Kelly: 25.0% of capital
+        Half Kelly: 12.5% (recommended)
+        Edge: +37.5%
+        P(50% drawdown) at full Kelly: 12.5%
+
+        I'd recommend half Kelly here. The edge is real but the
+        drawdown risk at full Kelly is meaningful...
 ```
 
 ---
@@ -167,13 +207,17 @@ Alpha Stack is built on seven principles documented in [ETHOS.md](ETHOS.md):
 alpha-stack/
 ├── CLAUDE.md              AI-native instructions for Claude Code
 ├── ETHOS.md               The Alpha Edge — finance AI philosophy
-├── setup.sh               One-line installer
+├── setup.sh               Claude Code skill installer
+├── setup-mcp.sh           Claude Desktop MCP installer
+├── mcp_server.py          MCP server (23 tools for Claude Desktop)
+├── pyproject.toml         Python dependencies (mcp SDK)
 ├── skills/                12 skill directories (SKILL.md + prompts/)
 │   ├── deal-execution/
 │   ├── hedge-fund-strategies/
 │   ├── portfolio-construction/
 │   └── ...
 ├── tools/                 19 Python calculators (stdlib-only)
+├── tests/                 53 pytest tests
 └── docs/                  Workflow documentation
 ```
 
