@@ -8,10 +8,7 @@ Usage:
 import argparse
 import math
 
-
-def norm_cdf(x: float) -> float:
-    """Standard normal CDF."""
-    return 0.5 * (1 + math.erf(x / math.sqrt(2)))
+from _math import norm_cdf
 
 
 def convertible_bond(

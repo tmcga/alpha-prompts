@@ -141,8 +141,15 @@ def main():
     if args.returns:
         returns = [float(x.strip()) for x in args.returns.split(",")]
     elif args.file:
+        import os
+
+        file_path = os.path.realpath(args.file)
+        if not os.path.isfile(file_path):
+            parser.error(f"File not found: {args.file}")
+        if not file_path.endswith(".csv"):
+            parser.error("Only .csv files are supported")
         returns = []
-        with open(args.file) as f:
+        with open(file_path) as f:
             reader = csv.reader(f)
             for row in reader:
                 if row and row[0].strip():
