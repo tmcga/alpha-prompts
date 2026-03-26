@@ -619,4 +619,4 @@ Event Cluster:    [X] deals in same regulatory jurisdiction [PASS/WARN/FAIL]
 - For global macro thesis construction --> **`/macro`**
 - For portfolio-level factor exposure management --> **`/portfolio`**
 - For credit analysis on levered acquirers --> **`/credit`**
-- For options strategies to express event views with convexity --> **`/options`**
+- For options strategies to express event views with convexity --> **`/derivatives`**

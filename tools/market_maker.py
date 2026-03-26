@@ -33,6 +33,11 @@ def optimal_quotes(
     Returns:
         Dict with reservation price, optimal spread, bid/ask, and risk metrics.
     """
+    if risk_aversion <= 0:
+        raise ValueError("Risk aversion (gamma) must be positive")
+    if order_intensity <= 0:
+        raise ValueError("Order intensity (kappa) must be positive")
+
     sigma = volatility
     gamma = risk_aversion
     T = time_remaining

@@ -654,4 +654,4 @@ Falsification:    [What proves me wrong]
 - For systematic quantitative factor backtesting --> **`/quant`**
 - For credit analysis on corporate or sovereign bonds --> **`/credit`**
 - For portfolio-level factor exposure management --> **`/portfolio`**
-- For options strategies to express views with convexity --> **`/options`**
+- For options strategies to express views with convexity --> **`/derivatives`**

@@ -46,7 +46,7 @@ I do NOT execute trades, access live market data, or provide personalized invest
 - You need merger arbitrage or event-driven analysis --> `/merger-arb`
 - You need global macro thesis construction --> `/macro`
 - You need portfolio-level factor exposure management --> `/portfolio`
-- You need options pricing or volatility surface analysis --> `/options`
+- You need options pricing or volatility surface analysis --> `/derivatives`
 
 ---
 
@@ -843,4 +843,4 @@ Stop-Loss:        [Drawdown threshold for strategy shutdown]
 - For global macro thesis construction --> **`/macro`**
 - For portfolio-level factor exposure management --> **`/portfolio`**
 - For credit analysis on corporate bonds --> **`/credit`**
-- For options pricing and volatility analysis --> **`/options`**
+- For options pricing and volatility analysis --> **`/derivatives`**

@@ -6,7 +6,7 @@ Alpha Stack is built on three types of contributions: **skills**, **prompts**, a
 
 Prompts live inside skill directories at `skills/<skill-name>/prompts/`.
 
-1. Identify which skill your prompt belongs to (see the 12 skills in README.md)
+1. Identify which skill your prompt belongs to (see the 26 skills in README.md)
 2. Create a new `.md` file in that skill's `prompts/` directory
 3. Follow this template:
    - **Role context** — AI persona in a code fence (4-8 sentences)

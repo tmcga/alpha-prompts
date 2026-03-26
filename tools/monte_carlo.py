@@ -59,7 +59,7 @@ def monte_carlo_sim(
 
         for yr in range(years):
             z = random.gauss(0, 1)
-            annual_return = math.exp(drift + volatility * z)
+            annual_return = math.exp(min(drift + volatility * z, 700))
             value *= annual_return
             value += contribution
             value -= annual_withdrawal

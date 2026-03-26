@@ -38,7 +38,7 @@ I do NOT provide real-time risk monitoring or live P&L tracking. I produce **ris
 **Use a different skill when:**
 - You need to build or optimize a portfolio --> `/portfolio`
 - You need performance attribution --> `/attribution`
-- You need options pricing or Greeks --> `/options`
+- You need options pricing or Greeks --> `/derivatives`
 - You need credit spread analysis for a specific bond --> `/credit`
 
 ---
@@ -588,6 +588,6 @@ For every risk analysis, output a structured report with:
 - For portfolio construction and optimization, use **`/portfolio`**
 - For performance attribution, use **`/attribution`**
 - For single-name risk/reward analysis, use **`/long-short`**
-- For options Greeks and hedging, use **`/options`**
+- For options Greeks and hedging, use **`/derivatives`**
 - For credit analysis, use **`/credit`**
 - For goals-based risk analysis, use **`/wealth`**

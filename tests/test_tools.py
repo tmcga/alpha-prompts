@@ -309,14 +309,15 @@ class TestBrinson:
         total = r["total_allocation"] + r["total_selection"] + r["total_interaction"]
         assert abs(total - r["active_return"]) < 1e-10
 
-    def test_weights_not_normalized_warns(self):
-        r = brinson_attribution(
-            [0.48, 0.48],
-            [0.10, 0.05],
-            [0.50, 0.50],
-            [0.08, 0.06],
-        )
-        assert r["weights_normalized"] is False
+    def test_weights_slightly_off_raises(self):
+        """Weights summing to 0.96 (>1% deviation) should raise."""
+        with pytest.raises(ValueError, match="must sum to"):
+            brinson_attribution(
+                [0.48, 0.48],
+                [0.10, 0.05],
+                [0.50, 0.50],
+                [0.08, 0.06],
+            )
 
     def test_weights_way_off_raises(self):
         with pytest.raises(ValueError, match="must sum to"):
@@ -359,6 +360,11 @@ class TestBlackLitterman:
         # View says asset 1 outperforms asset 2 by 2%
         assert r["posterior_returns"][0] > r["posterior_returns"][1]
 
+    def test_singular_matrix_raises(self):
+        """Singular covariance matrix should raise when views trigger inversion."""
+        with pytest.raises(ValueError, match="singular"):
+            black_litterman([0.5, 0.5], [[1, 2], [2, 4]], 2.5, 0.05, P=[[1, -1]], Q=[0.02])
+
 
 # ── Monte Carlo ───────────────────────────────────────────────────────────
 
@@ -381,6 +387,11 @@ class TestMonteCarlo:
         r = monte_carlo_sim(1000000, 0.07, 0.15, 10, num_sims=1000, goal=1500000, seed=42)
         assert r["success_probability"] is not None
         assert 0 <= r["success_probability"] <= 1
+
+    def test_high_vol_no_overflow(self):
+        """High volatility (crypto-level) should not overflow math.exp."""
+        r = monte_carlo_sim(1000000, 0.07, 0.80, 30, num_sims=10000, seed=42)
+        assert r["mean_terminal"] > 0
 
 
 # ── Merger Arb ────────────────────────────────────────────────────────────
@@ -491,3 +502,11 @@ class TestMarketMaker:
     def test_short_inventory_raises_reservation(self):
         r = optimal_quotes(100, -100, 0.1, 0.02, 1.0, 1.5)
         assert r["reservation_price"] > 100
+
+    def test_zero_gamma_raises(self):
+        with pytest.raises(ValueError, match="Risk aversion"):
+            optimal_quotes(100, 0, 0, 0.02, 1.0, 1.5)
+
+    def test_zero_intensity_raises(self):
+        with pytest.raises(ValueError, match="Order intensity"):
+            optimal_quotes(100, 0, 0.01, 0.02, 1.0, 0)
