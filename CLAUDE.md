@@ -155,6 +155,8 @@ When a user's question involves quantitative analysis, run the relevant Python t
 | VC fund returns, dilution, TVPI | `python3 tools/vc_returns.py` |
 | Loan amortization, mortgage | `python3 tools/loan_amort.py` |
 | Market making, optimal quoting | `python3 tools/market_maker.py` |
+| Treasury yield curve, risk-free rate | `python3 tools/fetch.py --treasury` |
+| Economic data (fed funds, CPI, VIX) | `python3 tools/fetch.py --fred DGS10,FEDFUNDS` |
 
 ## Output Standards
 
