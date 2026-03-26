@@ -58,6 +58,67 @@ This is **Alpha Stack** — an installable AI skill system for finance. 26 skill
 | `/board-deck` | board-deck | Board reporting, KPI dashboards, investor updates, earnings prep |
 | `/fpa` | fpa | FP&A, unit economics, SaaS metrics, headcount modeling, strategic finance |
 
+## Skill Router
+
+When a user describes a problem without invoking a specific skill, match their intent and suggest the right skill. Use this decision tree:
+
+**"How much is this company worth?" / "Valuation"**
+- Selling the company → `/sell-side`
+- Acquiring the company → `/buy-side`
+- PE sponsor evaluating → `/lbo` or `/pe`
+- Public equity investment thesis → `/long-short`
+- Quick DCF or WACC calculation → just run `tools/dcf.py` or `tools/wacc.py`
+
+**"Risk" / "How risky is this?"**
+- Portfolio-level risk (VaR, drawdown, stress) → `/risk`
+- Credit risk on a specific issuer → `/credit`
+- Company in distress or near default → `/restructuring`
+- Position sizing question → `/long-short` (Kelly) or run `tools/kelly.py`
+
+**"Deal" / "M&A" / "Acquisition"**
+- Selling → `/sell-side`
+- Buying → `/buy-side`
+- LBO / PE sponsor → `/lbo`
+- Deal already announced (spread trading) → `/merger-arb`
+- IPO → `/ipo`
+
+**"Options" / "Volatility" / "Greeks"**
+- Pricing or strategy construction → `/derivatives`
+- Market-making / quoting → `/market-making`
+- Quick Black-Scholes calculation → run `tools/black_scholes.py`
+
+**"Portfolio" / "Allocation" / "Rebalance"**
+- Building or optimizing a portfolio → `/portfolio`
+- Measuring performance vs benchmark → `/attribution`
+- Risk analytics on existing portfolio → `/risk`
+
+**"Startup" / "Fundraise" / "VC"**
+- Evaluating a startup investment → `/vc`
+- Building a fundraise deck → `/pitch-deck`
+- Term sheet or cap table → `/vc`
+
+**"Budget" / "Forecast" / "FP&A" / "Board"**
+- Annual budget build → `/budget`
+- Cash flow or revenue forecast → `/forecast`
+- Unit economics or SaaS metrics → `/fpa`
+- Board presentation or investor update → `/board-deck`
+
+**"Real estate" / "Property" / "Cap rate"**
+- Real estate investment analysis → `/real-estate`
+- Quick cap rate calculation → run `tools/cap_rate.py`
+
+**"Retirement" / "Wealth" / "Estate"**
+- Retirement planning or Monte Carlo → `/wealth`
+- Quick Monte Carlo simulation → run `tools/monte_carlo.py`
+
+**"Macro" / "Rates" / "FX" / "Cross-asset"**
+- Macro thesis or regime analysis → `/macro`
+
+**"Quant" / "Signal" / "Backtest" / "Alpha"**
+- Signal development or backtesting → `/quant`
+
+**When ambiguous:** Ask the user one clarifying question — "Are you looking at this as a [buyer/seller/trader/risk manager]?" The answer determines the skill.
+
 ## The Alpha Stack Workflow
 
 Every analysis follows six phases: **Source > Diligence > Model > Stress > Decide > Monitor**
