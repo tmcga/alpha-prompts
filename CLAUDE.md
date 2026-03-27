@@ -55,10 +55,17 @@ This is **Alpha Stack** — an installable AI skill system for finance. 26 skill
 | `/private-credit` | private-credit | Direct lending (unitranche, mezz, covenant design, risk-adjusted yield) |
 | `/secondaries` | secondaries | LP secondaries, GP-led continuation, NAV lending, fund restructuring |
 
+**Venture Capital**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/vc` | venture-capital | General VC analysis (routes to specialized VC skills below) |
+| `/vc-early` | vc-early | Pre-seed through Series A (term sheets, SAFEs, cap tables, dilution) |
+| `/vc-growth` | vc-growth | Series B+ (growth metrics, biotech rNPV, crypto token econ, secondaries) |
+| `/vc-fund` | vc-fund | Fund construction (portfolio math, reserves, J-curve, LP reporting) |
+
 **Alternatives**
 | Command | Skill | What It Does |
 |---------|-------|-------------|
-| `/vc` | venture-capital | Venture capital (term sheets, cap tables, dilution, rNPV, crypto) |
 | `/wealth` | wealth-advisory | Wealth advisory (retirement, estate/tax, goals-based, insurance) |
 
 **Quant**
@@ -110,9 +117,13 @@ When a user describes a problem without invoking a specific skill, match their i
 - Risk analytics on existing portfolio → `/risk`
 
 **"Startup" / "Fundraise" / "VC"**
-- Evaluating a startup investment → `/vc`
+- Seed / Series A evaluation → `/vc-early`
+- Term sheet or cap table → `/vc-early`
+- Series B+ / growth-stage company → `/vc-growth`
+- Biotech rNPV or crypto token economics → `/vc-growth`
+- VC fund construction or LP reporting → `/vc-fund`
 - Building a fundraise deck → `/pitch-deck`
-- Term sheet or cap table → `/vc`
+- General VC question → `/vc` (routes to the right sub-skill)
 
 **"Budget" / "Forecast" / "FP&A" / "Board"**
 - Annual budget build → `/budget`
