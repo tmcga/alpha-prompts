@@ -46,10 +46,18 @@ This is **Alpha Stack** — an installable AI skill system for finance. 26 skill
 | `/re-debt` | re-debt | Capital stack structuring (DSCR, LTV, mezz, preferred, bridge) |
 | `/re-reit` | re-reit | Public REIT analysis (NAV, FFO/AFFO, implied cap rates, comps) |
 
+**Private Capital**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/pe` | private-capital | General PE analysis (routes to specialized PE skills below) |
+| `/pe-buyout` | pe-buyout | Control buyouts (LBO, platform + bolt-on, returns attribution, value creation) |
+| `/pe-growth` | pe-growth | Growth equity (minority stakes, unit economics, path to profitability, governance) |
+| `/private-credit` | private-credit | Direct lending (unitranche, mezz, covenant design, risk-adjusted yield) |
+| `/secondaries` | secondaries | LP secondaries, GP-led continuation, NAV lending, fund restructuring |
+
 **Alternatives**
 | Command | Skill | What It Does |
 |---------|-------|-------------|
-| `/pe` | private-capital | Private equity (buyouts, growth, credit, fund metrics) |
 | `/vc` | venture-capital | Venture capital (term sheets, cap tables, dilution, rNPV, crypto) |
 | `/wealth` | wealth-advisory | Wealth advisory (retirement, estate/tax, goals-based, insurance) |
 
@@ -73,7 +81,8 @@ When a user describes a problem without invoking a specific skill, match their i
 **"How much is this company worth?" / "Valuation"**
 - Selling the company → `/sell-side`
 - Acquiring the company → `/buy-side`
-- PE sponsor evaluating → `/lbo` or `/pe`
+- PE buyout / LBO → `/pe-buyout`
+- Growth equity / minority investment → `/pe-growth`
 - Public equity investment thesis → `/long-short`
 - Quick DCF or WACC calculation → just run `tools/dcf.py` or `tools/wacc.py`
 
@@ -86,7 +95,7 @@ When a user describes a problem without invoking a specific skill, match their i
 **"Deal" / "M&A" / "Acquisition"**
 - Selling → `/sell-side`
 - Buying → `/buy-side`
-- LBO / PE sponsor → `/lbo`
+- LBO / PE sponsor → `/pe-buyout`
 - Deal already announced (spread trading) → `/merger-arb`
 - IPO → `/ipo`
 
@@ -110,6 +119,14 @@ When a user describes a problem without invoking a specific skill, match their i
 - Cash flow or revenue forecast → `/forecast`
 - Unit economics or SaaS metrics → `/fpa`
 - Board presentation or investor update → `/board-deck`
+
+**"Private equity" / "Buyout" / "PE" / "Private credit"**
+- Control buyout / LBO → `/pe-buyout`
+- Growth equity / minority investment → `/pe-growth`
+- Direct lending / mezzanine / unitranche → `/private-credit`
+- LP secondaries / GP-led continuation → `/secondaries`
+- General PE question → `/pe` (routes to the right sub-skill)
+- Quick LBO returns → run `tools/lbo.py`
 
 **"Real estate" / "Property" / "Cap rate"**
 - Buying a property or underwriting a deal → `/re-acquisitions`
