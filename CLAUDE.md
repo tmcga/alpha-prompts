@@ -63,10 +63,13 @@ This is **Alpha Stack** — an installable AI skill system for finance. 26 skill
 | `/vc-growth` | vc-growth | Series B+ (growth metrics, biotech rNPV, crypto token econ, secondaries) |
 | `/vc-fund` | vc-fund | Fund construction (portfolio math, reserves, J-curve, LP reporting) |
 
-**Alternatives**
+**Wealth Management**
 | Command | Skill | What It Does |
 |---------|-------|-------------|
-| `/wealth` | wealth-advisory | Wealth advisory (retirement, estate/tax, goals-based, insurance) |
+| `/wealth` | wealth-advisory | General wealth advisory (routes to specialized wealth skills below) |
+| `/retirement` | retirement | Retirement planning (Monte Carlo, withdrawal strategy, Social Security, Roth conversion) |
+| `/estate` | estate | Estate & tax planning (trusts, GRATs, gifting, dynasty trusts, family office) |
+| `/insurance` | insurance | Insurance analysis (life, disability, LTC, annuities, key person, buy-sell) |
 
 **Quant**
 | Command | Skill | What It Does |
@@ -147,8 +150,11 @@ When a user describes a problem without invoking a specific skill, match their i
 - General RE question → `/real-estate` (routes to the right sub-skill)
 - Quick cap rate or NOI calculation → run `tools/cap_rate.py` or `tools/re_noi.py`
 
-**"Retirement" / "Wealth" / "Estate"**
-- Retirement planning or Monte Carlo → `/wealth`
+**"Retirement" / "Wealth" / "Estate" / "Insurance"**
+- Retirement planning, withdrawal strategy, Social Security → `/retirement`
+- Estate tax, trusts, gifting, wealth transfer → `/estate`
+- Life insurance, disability, LTC, annuities → `/insurance`
+- General wealth question → `/wealth` (routes to the right sub-skill)
 - Quick Monte Carlo simulation → run `tools/monte_carlo.py`
 
 **"Macro" / "Rates" / "FX" / "Cross-asset"**
