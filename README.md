@@ -3,17 +3,17 @@
 [![CI](https://github.com/tmcga/alpha-stack/actions/workflows/ci.yml/badge.svg)](https://github.com/tmcga/alpha-stack/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Skills](https://img.shields.io/badge/skills-26-orange)
-![Tools](https://img.shields.io/badge/tools-19-purple)
+![Skills](https://img.shields.io/badge/skills-40-orange)
+![Tools](https://img.shields.io/badge/tools-25-purple)
 
 > What if every analyst had a senior MD's frameworks, a quant's toolkit, and a risk officer's discipline — loaded into their terminal?
 
-**Alpha Stack** is an installable AI skill system for finance. 26 skills, 19 computational tools, and a structured workflow for investment analysis — from sourcing ideas to monitoring positions.
+**Alpha Stack** is an installable AI skill system for finance. 40 skills covering every major Wall Street desk and corporate finance function, 25 computational tools with zero dependencies, and a structured workflow for investment analysis — from sourcing ideas to monitoring positions.
 
 ### Why Alpha Stack?
 
-- **Not prompts — pipelines.** Each skill is a 300-870 line execution pipeline with phased workflows, decision gates, and quality checks. Not a list of questions to ask.
-- **Real math, not vibes.** 19 Python tools that run DCF, Black-Scholes, Monte Carlo, Black-Litterman, and more. Every recommendation is backed by a calculation you can verify.
+- **Not prompts — pipelines.** Each skill is a 200-870 line execution pipeline with phased workflows, decision gates, and quality checks. Not a list of questions to ask.
+- **Real math, not vibes.** 25 Python tools that run DCF, Black-Scholes, Monte Carlo, Black-Litterman, LBO, DSCR sizing, equity waterfalls, and more. Every recommendation is backed by a calculation you can verify.
 - **Adversarial by default.** Every thesis gets a pre-mortem. Every valuation gets a sensitivity table. Every recommendation includes what kills it.
 - **Zero dependencies.** All tools are stdlib-only Python. Install in 30 seconds. No API keys, no accounts, no subscriptions.
 
@@ -52,7 +52,7 @@ Every analysis follows six phases:
 
 ---
 
-## 26 Skills
+## 40 Skills
 
 **Deal & Banking**
 | Command | What It Does |
@@ -87,13 +87,35 @@ Every analysis follows six phases:
 | `/risk` | Risk analytics — VaR/CVaR, Monte Carlo stress testing, factor decomposition, tail risk |
 | `/attribution` | Performance attribution — Brinson-Fachler, factor, currency, fixed income, multi-period |
 
-**Alternatives**
+**Real Estate**
 | Command | What It Does |
 |---------|-------------|
-| `/pe` | Private equity — buyouts, growth, special sits, private credit, fund metrics |
-| `/vc` | Venture capital — term sheets, cap tables, dilution, rNPV, crypto/web3, fund construction |
-| `/real-estate` | Real estate — cap rates, development pro forma, REIT analysis, debt structuring |
-| `/wealth` | Wealth advisory — retirement (Monte Carlo), estate/tax, goals-based, insurance |
+| `/re-acquisitions` | Property acquisition underwriting — core, value-add, opportunistic strategies |
+| `/re-development` | Ground-up development — cost build, lease-up, yield on cost, construction financing |
+| `/re-debt` | Capital stack structuring — DSCR/LTV/debt yield sizing, mezzanine, preferred, bridge |
+| `/re-reit` | Public REIT analysis — NAV, FFO/AFFO, implied cap rates, sector comps |
+
+**Private Capital**
+| Command | What It Does |
+|---------|-------------|
+| `/pe-buyout` | Control buyouts — LBO, platform + bolt-on, returns attribution, value creation |
+| `/pe-growth` | Growth equity — minority stakes, unit economics, path to profitability, governance |
+| `/private-credit` | Direct lending — unitranche, mezzanine, covenant design, risk-adjusted yield |
+| `/secondaries` | LP secondaries — GP-led continuation, NAV lending, fund restructuring |
+
+**Venture Capital**
+| Command | What It Does |
+|---------|-------------|
+| `/vc-early` | Pre-seed through Series A — term sheets, SAFEs, cap tables, dilution modeling |
+| `/vc-growth` | Series B+ — growth metrics, biotech rNPV, crypto token economics, secondary shares |
+| `/vc-fund` | Fund construction — portfolio math, reserves, power law, J-curve, LP reporting |
+
+**Wealth Management**
+| Command | What It Does |
+|---------|-------------|
+| `/retirement` | Retirement planning — Monte Carlo, withdrawal strategy, Social Security, Roth conversion |
+| `/estate` | Estate & tax planning — trusts, GRATs, gifting, dynasty trusts, family office |
+| `/insurance` | Insurance analysis — life, disability, LTC, annuities, key person, buy-sell |
 
 **Quant**
 | Command | What It Does |
@@ -108,31 +130,34 @@ Every analysis follows six phases:
 | `/board-deck` | Board reporting, KPI dashboards, investor updates, earnings prep |
 | `/fpa` | FP&A — unit economics, SaaS metrics, headcount modeling, strategic finance |
 
-Each skill is a **300-870+ line execution pipeline** with phased workflows, decision gates, tool integration, output specifications, quality gates, hard constraints, and common pitfalls.
+Each skill is an execution pipeline with phased workflows, decision gates, tool integration, quality gates, hard constraints, and common pitfalls.
 
 Every skill has a **ready-to-paste example** in [`examples/`](examples/) — realistic scenarios with all inputs pre-filled so you can try any skill immediately without inventing data.
 
 ---
 
-## 19 Computational Tools
+## 25 Computational Tools
 
 Standalone Python calculators. Zero dependencies — just Python 3.10+. Run from CLI or import as modules.
 
 | Domain | Tools |
 |--------|-------|
-| **Valuation** | `dcf.py` `lbo.py` `wacc.py` |
+| **Valuation** | `dcf.py` `lbo.py` `wacc.py` `irr.py` |
 | **Options** | `black_scholes.py` `implied_vol.py` `convertible.py` |
 | **Fixed Income & Credit** | `bond_yield.py` `merton_model.py` `credit_spread.py` |
 | **Portfolio & Risk** | `portfolio_risk.py` `kelly.py` `brinson.py` `black_litterman.py` `monte_carlo.py` |
 | **M&A** | `merger_arb.py` |
-| **RE / VC / Lending** | `cap_rate.py` `vc_returns.py` `loan_amort.py` |
+| **Real Estate** | `cap_rate.py` `re_debt.py` `re_waterfall.py` `re_development.py` `re_noi.py` |
+| **VC / Lending** | `vc_returns.py` `loan_amort.py` |
+| **Tax & Depreciation** | `depreciation.py` |
 | **Quant Trading** | `market_maker.py` |
 
 ```bash
 # Run any tool directly
 python3 tools/dcf.py --fcf 100,110,121,133,146 --wacc 0.10 --terminal-growth 0.025 --shares 100
-python3 tools/kelly.py --win-prob 0.55 --win-loss-ratio 1.5 --fraction 0.5
-python3 tools/monte_carlo.py --initial 1000000 --return 0.07 --vol 0.15 --years 30 --withdrawal 0.04
+python3 tools/re_debt.py --noi 1800000 --value 28000000 --rate 0.0625 --min-dscr 1.25 --max-ltv 0.65
+python3 tools/re_waterfall.py --equity 10000000 --cfs 800000,900000,1000000,1100000,15000000
+python3 tools/irr.py --cfs="-1000000,200000,300000,400000,500000"
 ```
 
 Full tool documentation at [tools/README.md](tools/README.md).
@@ -141,7 +166,7 @@ Full tool documentation at [tools/README.md](tools/README.md).
 
 ## Claude Desktop (MCP Server)
 
-Alpha Stack is also a **finance MCP server** — 23 tools that Claude Desktop can call natively. No terminal, no Python knowledge. Just ask a question and Claude runs the math.
+Alpha Stack is also a **finance MCP server** — 37 tools that Claude Desktop can call natively. No terminal, no Python knowledge. Just ask a question and Claude runs the math.
 
 ### Setup
 
@@ -171,18 +196,6 @@ Restart Claude Desktop. Look for the hammer icon — that means the tools are li
 4. Restart Claude Desktop.
 </details>
 
-### 23 MCP Tools
-
-| Category | Tools Available |
-|----------|---------------|
-| **Valuation** | `dcf_valuation` `lbo_returns` `wacc` |
-| **Options & Derivatives** | `black_scholes` `implied_volatility` `convertible_bond` |
-| **Fixed Income & Credit** | `bond_analytics` `merton_model` `altman_zscore` `credit_from_spread` |
-| **Portfolio & Risk** | `portfolio_metrics` `benchmark_relative` `kelly_criterion` `multi_outcome_kelly` `brinson_attribution` `black_litterman` `monte_carlo_sim` |
-| **M&A** | `merger_arb` |
-| **RE / VC / Lending** | `real_estate_valuation` `fund_metrics` `dilution_waterfall` `loan_amortization` |
-| **Quant Trading** | `optimal_quotes` |
-
 ### What It Looks Like
 
 ```
@@ -198,24 +211,18 @@ Claude: [calls lbo_returns tool]
           EBITDA Growth:    0.9%
           Multiple Change: 27.6%
           Deleveraging:    71.5%
-
-        The majority of returns come from deleveraging — the debt paydown
-        from $500M to $120M drives 71.5% of the return. Multiple expansion
-        from 10x to 11x adds another 27.6%...
 ```
 
 ```
-You:    Size my position. Win probability 55%, win/loss ratio 1.5.
+You:    Size a senior loan on a $28M property with $1.8M NOI at 6.25%.
 
-Claude: [calls kelly_criterion tool]
+Claude: [calls re_debt_sizing tool]
 
-        Full Kelly: 25.0% of capital
-        Half Kelly: 12.5% (recommended)
-        Edge: +37.5%
-        P(50% drawdown) at full Kelly: 12.5%
-
-        I'd recommend half Kelly here. The edge is real but the
-        drawdown risk at full Kelly is meaningful...
+        Binding Constraint: LTV
+        Max Loan:     $18,200,000
+        Actual DSCR:  1.34x
+        Debt Yield:   9.89%
+        Positive Leverage: YES
 ```
 
 ---
@@ -256,23 +263,25 @@ alpha-stack/
 ├── ETHOS.md               The Alpha Edge — finance AI philosophy
 ├── setup.sh               Claude Code skill installer
 ├── setup-mcp.sh           Claude Desktop MCP installer
-├── mcp_server.py          MCP server (23 tools for Claude Desktop)
+├── mcp_server.py          MCP server (37 tools for Claude Desktop)
 ├── pyproject.toml         Python dependencies (mcp SDK)
-├── examples/              26 ready-to-paste scenarios (one per skill)
-├── skills/                26 skill directories (SKILL.md + prompts/)
+├── examples/              26 ready-to-paste scenarios + 5 annotated outputs
+├── scripts/               Contributor scaffolding (new-skill.sh, new-tool.sh)
+├── skills/                40 skill directories (SKILL.md + prompts/)
 │   ├── sell-side/         782 lines — full M&A process
-│   ├── lbo/               843 lines — LBO modeling pipeline
-│   ├── long-short/        726 lines — L/S equity analysis
-│   ├── pitch-deck/        372 lines — pitch deck builder
-│   └── ... (22 more)
-├── tools/                 19 Python calculators (stdlib-only)
-├── tests/                 53 pytest tests
+│   ├── re-acquisitions/   240 lines — property acquisition underwriting
+│   ├── pe-buyout/         257 lines — control buyout analysis
+│   ├── vc-early/          252 lines — early-stage VC evaluation
+│   ├── retirement/        282 lines — Monte Carlo retirement planning
+│   └── ... (35 more)
+├── tools/                 25 Python calculators (stdlib-only, <200 lines each)
+├── tests/                 98 pytest tests
 └── docs/                  Workflow documentation
 ```
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding new skills, prompts, or tools. All contributions welcome — new prompt frameworks, additional tools, and skill improvements.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding new skills, prompts, or tools. Scaffolding scripts in [`scripts/`](scripts/) create properly structured files from templates. All contributions welcome.
 
 ## License
 
