@@ -3,12 +3,12 @@
 [![CI](https://github.com/tmcga/alpha-stack/actions/workflows/ci.yml/badge.svg)](https://github.com/tmcga/alpha-stack/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Skills](https://img.shields.io/badge/skills-40-orange)
+![Skills](https://img.shields.io/badge/skills-44-orange)
 ![Tools](https://img.shields.io/badge/tools-25-purple)
 
 > What if every analyst had a senior MD's frameworks, a quant's toolkit, and a risk officer's discipline — loaded into their terminal?
 
-**Alpha Stack** is an installable AI skill system for finance. 40 skills covering every major Wall Street desk and corporate finance function, 25 computational tools with zero dependencies, and a structured workflow for investment analysis — from sourcing ideas to monitoring positions.
+**Alpha Stack** is an installable AI skill system for finance. 44 skills covering every major Wall Street desk, corporate finance function, and back-office operation, 25 computational tools with zero dependencies, and a structured workflow for investment analysis — from sourcing ideas to monitoring positions.
 
 ### Why Alpha Stack?
 
@@ -52,7 +52,7 @@ Every analysis follows six phases:
 
 ---
 
-## 40 Skills
+## 44 Skills
 
 **Deal & Banking**
 | Command | What It Does |
@@ -129,6 +129,14 @@ Every analysis follows six phases:
 | `/forecast` | Rolling forecasts, 13-week cash flow, scenario planning, revenue modeling |
 | `/board-deck` | Board reporting, KPI dashboards, investor updates, earnings prep |
 | `/fpa` | FP&A — unit economics, SaaS metrics, headcount modeling, strategic finance |
+
+**Accounting & Data**
+| Command | What It Does |
+|---------|-------------|
+| `/accounting` | Journal entries, accruals, closing process, chart of accounts, ASC 606/842 |
+| `/financial-statements` | P&L, balance sheet, cash flow (indirect method), ratio analysis, DuPont |
+| `/audit` | Audit planning, risk assessment, substantive testing, controls, sampling |
+| `/data-entry` | Financial data extraction, cleaning, normalization, validation |
 
 Each skill is an execution pipeline with phased workflows, decision gates, tool integration, quality gates, hard constraints, and common pitfalls.
 
@@ -267,7 +275,7 @@ alpha-stack/
 ├── pyproject.toml         Python dependencies (mcp SDK)
 ├── examples/              26 ready-to-paste scenarios + 5 annotated outputs
 ├── scripts/               Contributor scaffolding (new-skill.sh, new-tool.sh)
-├── skills/                40 skill directories (SKILL.md + prompts/)
+├── skills/                44 skill directories (SKILL.md + prompts/)
 │   ├── sell-side/         782 lines — full M&A process
 │   ├── re-acquisitions/   240 lines — property acquisition underwriting
 │   ├── pe-buyout/         257 lines — control buyout analysis

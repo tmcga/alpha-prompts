@@ -84,6 +84,14 @@ This is **Alpha Stack** — an installable AI skill system for finance. 26 skill
 | `/board-deck` | board-deck | Board reporting, KPI dashboards, investor updates, earnings prep |
 | `/fpa` | fpa | FP&A, unit economics, SaaS metrics, headcount modeling, strategic finance |
 
+**Accounting & Data**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/accounting` | accounting | Journal entries, accruals, closing process, chart of accounts, ASC 606/842 |
+| `/financial-statements` | financial-statements | P&L, balance sheet, cash flow (indirect), ratio analysis, DuPont, red flags |
+| `/audit` | audit | Risk assessment, materiality, substantive testing, controls, sampling, management letter |
+| `/data-entry` | data-entry | Financial data extraction, cleaning, normalization, validation, tool-ready formatting |
+
 ## Skill Router
 
 When a user describes a problem without invoking a specific skill, match their intent and suggest the right skill. Use this decision tree:
@@ -141,6 +149,12 @@ When a user describes a problem without invoking a specific skill, match their i
 - LP secondaries / GP-led continuation → `/secondaries`
 - General PE question → `/pe` (routes to the right sub-skill)
 - Quick LBO returns → run `tools/lbo.py`
+
+**"Accounting" / "Journal entry" / "Financial statements" / "Audit"**
+- Recording transactions, accruals, closing → `/accounting`
+- Building or analyzing P&L, balance sheet, cash flow → `/financial-statements`
+- Audit planning, controls testing, materiality → `/audit`
+- Extracting or cleaning financial data → `/data-entry`
 
 **"Real estate" / "Property" / "Cap rate"**
 - Buying a property or underwriting a deal → `/re-acquisitions`
