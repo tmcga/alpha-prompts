@@ -30,6 +30,12 @@ This is **Alpha Stack** — an installable AI skill system for finance. 26 skill
 | `/merger-arb` | merger-arb | Event-driven / merger arb (spread → probability → collar/CVR) |
 | `/credit` | credit | Credit & distressed (Z-Score → Merton → recovery → relative value) |
 
+**Equity Research**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/equity-research` | equity-research | Initiating coverage, earnings models, trading comps, DCF, SOTP, price targets |
+| `/earnings` | earnings | Earnings preview, post-earnings analysis, estimate revisions, guidance tracking |
+
 **Portfolio & Risk**
 | Command | Skill | What It Does |
 |---------|-------|-------------|
@@ -101,7 +107,8 @@ When a user describes a problem without invoking a specific skill, match their i
 - Acquiring the company → `/buy-side`
 - PE buyout / LBO → `/pe-buyout`
 - Growth equity / minority investment → `/pe-growth`
-- Public equity investment thesis → `/long-short`
+- Public equity research / coverage initiation → `/equity-research`
+- Public equity trading thesis with sizing → `/long-short`
 - Quick DCF or WACC calculation → just run `tools/dcf.py` or `tools/wacc.py`
 
 **"Risk" / "How risky is this?"**
@@ -149,6 +156,12 @@ When a user describes a problem without invoking a specific skill, match their i
 - LP secondaries / GP-led continuation → `/secondaries`
 - General PE question → `/pe` (routes to the right sub-skill)
 - Quick LBO returns → run `tools/lbo.py`
+
+**"Earnings" / "Quarterly results" / "Estimates" / "Comps"**
+- Earnings preview or post-earnings analysis → `/earnings`
+- Estimate revisions or consensus tracking → `/earnings`
+- Initiating coverage or equity research report → `/equity-research`
+- Trading comps table or relative valuation → `/equity-research`
 
 **"Accounting" / "Journal entry" / "Financial statements" / "Audit"**
 - Recording transactions, accruals, closing → `/accounting`

@@ -3,12 +3,12 @@
 [![CI](https://github.com/tmcga/alpha-stack/actions/workflows/ci.yml/badge.svg)](https://github.com/tmcga/alpha-stack/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Skills](https://img.shields.io/badge/skills-44-orange)
+![Skills](https://img.shields.io/badge/skills-46-orange)
 ![Tools](https://img.shields.io/badge/tools-25-purple)
 
 > What if every analyst had a senior MD's frameworks, a quant's toolkit, and a risk officer's discipline — loaded into their terminal?
 
-**Alpha Stack** is an installable AI skill system for finance. 44 skills covering every major Wall Street desk, corporate finance function, and back-office operation, 25 computational tools with zero dependencies, and a structured workflow for investment analysis — from sourcing ideas to monitoring positions.
+**Alpha Stack** is an installable AI skill system for finance. 46 skills covering every major Wall Street desk, corporate finance function, and back-office operation, 25 computational tools with zero dependencies, and a structured workflow for investment analysis — from sourcing ideas to monitoring positions.
 
 ### Why Alpha Stack?
 
@@ -52,7 +52,7 @@ Every analysis follows six phases:
 
 ---
 
-## 44 Skills
+## 46 Skills
 
 **Deal & Banking**
 | Command | What It Does |
@@ -79,6 +79,12 @@ Every analysis follows six phases:
 | `/macro` | Global macro — regime identification, cross-asset expression, geopolitical risk |
 | `/merger-arb` | Event-driven — deal spread, implied probability, collar/CVR, portfolio exposure |
 | `/credit` | Credit analysis — Z-Score, Merton model, recovery, relative value, IG/HY/distressed |
+
+**Equity Research**
+| Command | What It Does |
+|---------|-------------|
+| `/equity-research` | Initiating coverage — earnings models, trading comps, DCF, SOTP, price targets |
+| `/earnings` | Earnings analysis — preview, post-earnings, estimate revisions, guidance tracking |
 
 **Portfolio & Risk**
 | Command | What It Does |
@@ -275,7 +281,7 @@ alpha-stack/
 ├── pyproject.toml         Python dependencies (mcp SDK)
 ├── examples/              26 ready-to-paste scenarios + 5 annotated outputs
 ├── scripts/               Contributor scaffolding (new-skill.sh, new-tool.sh)
-├── skills/                44 skill directories (SKILL.md + prompts/)
+├── skills/                46 skill directories (SKILL.md + prompts/)
 │   ├── sell-side/         782 lines — full M&A process
 │   ├── re-acquisitions/   240 lines — property acquisition underwriting
 │   ├── pe-buyout/         257 lines — control buyout analysis
