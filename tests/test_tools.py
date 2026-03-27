@@ -578,3 +578,49 @@ class TestState:
         monkeypatch.setattr(state, "STATE_DIR", str(tmp_path))
         r = state.load_session("nonexistent")
         assert "error" in r
+
+
+class TestChain:
+    """Tests for chain.py — multi-tool workflows."""
+
+    def test_valuation_triangle_dcf_only(self):
+        from chain import valuation_triangle
+
+        r = valuation_triangle([100, 110, 121], 0.10, 0.025)
+        assert "dcf" in r
+        assert r["dcf"]["enterprise_value"] > 0
+        assert "range" in r
+        assert r["range"]["ev_low"] < r["range"]["ev_high"]
+
+    def test_valuation_triangle_with_lbo(self):
+        from chain import valuation_triangle
+
+        r = valuation_triangle(
+            [100, 110, 121],
+            0.10,
+            0.025,
+            lbo_ebitda=100,
+            entry_multiple=10,
+            exit_multiple=11,
+            leverage=5,
+        )
+        assert "dcf" in r and "lbo" in r
+        assert r["lbo"]["moic"] > 1.0
+        assert r["lbo"]["irr"] > 0
+
+    def test_credit_full(self):
+        from chain import credit_full
+
+        r = credit_full(revenue=680, ebitda=102, total_debt=820, equity_value=200, asset_vol=0.35)
+        assert "merton" in r
+        assert "summary" in r
+        assert r["summary"]["leverage"] == pytest.approx(8.0, abs=0.1)
+
+    def test_portfolio_full(self):
+        from chain import portfolio_full
+
+        returns = [0.01, -0.02, 0.03, 0.01, -0.01, 0.02, 0.015, -0.005, 0.025, 0.01, -0.015, 0.02]
+        r = portfolio_full(returns, risk_free=0.045, win_prob=0.6, win_loss_ratio=1.5)
+        assert "metrics" in r
+        assert "kelly" in r
+        assert r["kelly"]["full_kelly"] > 0

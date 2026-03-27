@@ -61,6 +61,8 @@ save_session = _lazy("state", "save_session")
 load_session = _lazy("state", "load_session")
 list_sessions_fn = _lazy("state", "list_sessions")
 delete_session = _lazy("state", "delete_session")
+valuation_triangle = _lazy("chain", "valuation_triangle")
+credit_full = _lazy("chain", "credit_full")
 
 mcp = FastMCP("alpha-stack")
 
@@ -675,6 +677,71 @@ async def _del(name: str) -> str:
         name: Session name to delete
     """
     return _safe_call(delete_session, name)
+
+
+@mcp.tool(name="valuation_triangle")
+async def _val_tri(
+    fcfs: list[float],
+    wacc: float,
+    terminal_growth: float,
+    net_debt: float = 0,
+    shares: float = 1,
+    lbo_ebitda: float | None = None,
+    entry_multiple: float | None = None,
+    exit_multiple: float | None = None,
+    leverage: float = 5.0,
+    debt_rate: float = 0.06,
+    ebitda_growth: float = 0.08,
+) -> str:
+    """Run DCF + LBO together for a unified valuation range.
+
+    Args:
+        fcfs: Projected free cash flows
+        wacc: Weighted average cost of capital
+        terminal_growth: Terminal growth rate
+        net_debt: Net debt
+        shares: Shares outstanding
+        lbo_ebitda: EBITDA for LBO analysis (optional — include for LBO floor)
+        entry_multiple: LBO entry EV/EBITDA
+        exit_multiple: LBO exit EV/EBITDA
+        leverage: LBO debt/EBITDA
+        debt_rate: LBO interest rate
+        ebitda_growth: LBO EBITDA growth rate
+    """
+    return _safe_call(
+        valuation_triangle,
+        fcfs,
+        wacc,
+        terminal_growth,
+        net_debt,
+        shares,
+        lbo_ebitda,
+        entry_multiple,
+        exit_multiple,
+        leverage,
+        debt_rate,
+        ebitda_growth,
+    )
+
+
+@mcp.tool(name="credit_analysis")
+async def _cred_full(
+    revenue: float,
+    ebitda: float,
+    total_debt: float,
+    equity_value: float,
+    asset_vol: float = 0.30,
+) -> str:
+    """Run Merton model for integrated credit analysis — default probability, distance to default.
+
+    Args:
+        revenue: Annual revenue
+        ebitda: Annual EBITDA
+        total_debt: Total debt outstanding
+        equity_value: Market value of equity
+        asset_vol: Asset volatility (default 0.30)
+    """
+    return _safe_call(credit_full, revenue, ebitda, total_debt, equity_value, asset_vol)
 
 
 if __name__ == "__main__":
