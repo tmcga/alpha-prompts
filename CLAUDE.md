@@ -37,12 +37,20 @@ This is **Alpha Stack** — an installable AI skill system for finance. 26 skill
 | `/risk` | risk-analytics | Risk analytics (VaR/CVaR, Monte Carlo, stress testing, tail risk) |
 | `/attribution` | attribution | Performance attribution (Brinson, factor, currency, fixed income) |
 
+**Real Estate**
+| Command | Skill | What It Does |
+|---------|-------|-------------|
+| `/real-estate` | real-estate | General RE analysis (routes to specialized RE skills below) |
+| `/re-acquisitions` | re-acquisitions | Property acquisition underwriting (core, value-add, opportunistic) |
+| `/re-development` | re-development | Ground-up development (cost build, lease-up, yield on cost) |
+| `/re-debt` | re-debt | Capital stack structuring (DSCR, LTV, mezz, preferred, bridge) |
+| `/re-reit` | re-reit | Public REIT analysis (NAV, FFO/AFFO, implied cap rates, comps) |
+
 **Alternatives**
 | Command | Skill | What It Does |
 |---------|-------|-------------|
 | `/pe` | private-capital | Private equity (buyouts, growth, credit, fund metrics) |
 | `/vc` | venture-capital | Venture capital (term sheets, cap tables, dilution, rNPV, crypto) |
-| `/real-estate` | real-estate | Real estate (cap rates, development, REIT, debt structuring) |
 | `/wealth` | wealth-advisory | Wealth advisory (retirement, estate/tax, goals-based, insurance) |
 
 **Quant**
@@ -104,8 +112,12 @@ When a user describes a problem without invoking a specific skill, match their i
 - Board presentation or investor update → `/board-deck`
 
 **"Real estate" / "Property" / "Cap rate"**
-- Real estate investment analysis → `/real-estate`
-- Quick cap rate calculation → run `tools/cap_rate.py`
+- Buying a property or underwriting a deal → `/re-acquisitions`
+- Ground-up development or construction → `/re-development`
+- Debt sizing, DSCR, capital stack → `/re-debt`
+- Public REIT analysis, FFO, NAV → `/re-reit`
+- General RE question → `/real-estate` (routes to the right sub-skill)
+- Quick cap rate or NOI calculation → run `tools/cap_rate.py` or `tools/re_noi.py`
 
 **"Retirement" / "Wealth" / "Estate"**
 - Retirement planning or Monte Carlo → `/wealth`
